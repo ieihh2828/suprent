@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SUPrent62 — Прокат сапов в Солотче, Рязань</title>
-  <meta name="description" content="Аренда SUP-бордов в Солотче. Доски Funwater, без залога, бесплатный инструктаж. Будни 800₽, выходные 1100₽. Компаниям от 4 сапов — скидка 19%. Рейтинг 5.0 на Авито.">
+  <title>SUPrent62 — Прокат сапов в Солотче</title>
+  <meta name="description" content="Прокат сапбордов в Солотче, Рязань. Доски Funwater, без залога, инструктаж. Будни 800₽, выходные 1100₽. Компаниям от 4 сапов — скидка 19%.">
   <link rel="icon" href="img/logo.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,304 +16,239 @@
         extend: {
           fontFamily: { sans: ['Inter', 'sans-serif'] },
           colors: {
-            brand: { 50:'#f0fdfa',100:'#ccfbf1',200:'#99f6e4',300:'#5eead4',400:'#2dd4bf',500:'#14b8a6',600:'#0d9488',700:'#0f766e',800:'#115e59',900:'#134e4a' }
+            brand: {50:'#f0fdfa',100:'#ccfbf1',200:'#99f6e4',300:'#5eead4',400:'#2dd4bf',500:'#14b8a6',600:'#0d9488',700:'#0f766e',800:'#115e59',900:'#134e4a'}
           }
         }
       }
     }
   </script>
   <style>
-    .fade-up{opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease}
+    .fade-up{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
     .fade-up.visible{opacity:1;transform:translateY(0)}
-    .scale-in{opacity:0;transform:scale(.92);transition:opacity .7s ease,transform .7s ease}
-    .scale-in.visible{opacity:1;transform:scale(1)}
-    .slide-left{opacity:0;transform:translateX(-60px);transition:opacity .8s ease,transform .8s ease}
-    .slide-left.visible{opacity:1;transform:translateX(0)}
-    .slide-right{opacity:0;transform:translateX(60px);transition:opacity .8s ease,transform .8s ease}
-    .slide-right.visible{opacity:1;transform:translateX(0)}
   </style>
 </head>
-<body class="font-sans text-gray-800 bg-gray-950 antialiased">
+<body class="font-sans text-gray-800 bg-white antialiased">
 
 <!-- NAV -->
-<nav class="fixed top-0 w-full bg-white/95 backdrop-blur-md z-50 border-b border-gray-100 shadow-sm">
+<nav class="fixed top-0 w-full bg-white/95 backdrop-blur-md z-50 border-b border-gray-100">
   <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
     <a href="#" class="flex items-center gap-2">
-      <img src="img/logo.png" alt="SUPrent62" class="h-9 w-9 rounded-lg">
-      <span class="text-xl font-bold text-brand-700">SUPrent62</span>
+      <img src="img/logo.png" alt="SUPrent62" class="h-8 w-8 rounded-lg">
+      <span class="font-bold text-lg text-brand-700">SUPrent62</span>
     </a>
-    <div class="hidden md:flex gap-6 text-sm font-medium text-gray-600">
+    <div class="hidden md:flex gap-5 text-sm font-medium text-gray-600">
       <a href="#prices" class="hover:text-brand-600 transition">Цены</a>
       <a href="#fleet" class="hover:text-brand-600 transition">Сапы</a>
-      <a href="#tour" class="hover:text-brand-600 transition">Прогулки</a>
-      <a href="#why" class="hover:text-brand-600 transition">О нас</a>
+      <a href="#tour" class="hover:text-brand-600 transition">Прогулка</a>
       <a href="#location" class="hover:text-brand-600 transition">Локация</a>
       <a href="#contacts" class="hover:text-brand-600 transition">Контакты</a>
     </div>
-    <a href="tel:+79156053803" class="bg-brand-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-brand-700 transition shadow-md">Позвонить</a>
+    <a href="tel:+79156053803" class="bg-brand-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-brand-700 transition">Позвонить</a>
   </div>
 </nav>
 
-
 <!-- HERO -->
-<section class="relative pt-28 pb-20 md:pt-40 md:pb-36 overflow-hidden">
-  <div class="absolute inset-0 bg-gradient-to-br from-brand-900 via-brand-800 to-gray-900"></div>
-  <div class="absolute inset-0 opacity-10" style="background-image:url('data:image/svg+xml,%3Csvg width=60 height=60 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cpath d=%22M0 30Q15 20 30 30Q45 40 60 30%22 fill=%22none%22 stroke=%22white%22 stroke-width=%220.5%22/%3E%3C/svg%3E');background-size:60px 60px"></div>
-  <div class="relative max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
+<section class="pt-20 pb-12 md:pt-28 md:pb-20 bg-gray-50">
+  <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-8 items-center">
     <div class="fade-up">
-      <p class="text-brand-300 font-semibold text-sm mb-3 uppercase tracking-widest">Солотча, Рязань</p>
-      <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-white">
-        Прокат сапов<br><span class="text-brand-300">на целые сутки</span>
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight text-gray-900">
+        Прокат сапбордов<br>в Солотче
       </h1>
-      <p class="mt-5 text-lg text-brand-100 max-w-lg leading-relaxed">
-        Забираете утром — возвращаете когда накатаетесь. Без залога, по договору. Бесплатный инструктаж даже если ни разу не стояли на доске. Жилеты и водонепроницаемые чехлы для телефонов — бесплатно по желанию.
+      <p class="mt-4 text-base md:text-lg text-gray-600 max-w-md leading-relaxed">
+        Сдаём на сутки — забираете утром, катаетесь сколько хотите. Без залога, по договору. Проводим инструктаж. Жилеты и чехлы для телефонов — по желанию.
       </p>
-      <div class="mt-8 flex flex-wrap gap-4">
-        <a href="tel:+79156053803" class="bg-white text-brand-800 px-7 py-3.5 rounded-xl font-bold hover:bg-brand-50 transition shadow-xl text-lg">Позвонить</a>
-        <a href="https://www.avito.ru/brands/6cf8014eaebdd1df8f3f94bd1f3e6e82/all/predlozheniya_uslug?sellerId=22d13ecf193b40346434a4135102316b" target="_blank" class="bg-white/10 border border-white/30 text-white px-7 py-3.5 rounded-xl font-bold hover:bg-white/20 transition text-lg backdrop-blur-sm">Авито</a>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="tel:+79156053803" class="bg-brand-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-brand-700 transition text-sm md:text-base">Позвонить</a>
+        <a href="https://www.avito.ru/brands/6cf8014eaebdd1df8f3f94bd1f3e6e82/all/predlozheniya_uslug?sellerId=22d13ecf193b40346434a4135102316b" target="_blank" class="border border-gray-300 text-gray-700 px-6 py-3 rounded-xl font-semibold hover:border-brand-400 hover:text-brand-700 transition text-sm md:text-base">Написать на Авито</a>
       </div>
-      <div class="mt-10 flex flex-wrap items-center gap-5 text-sm text-brand-200">
-        <div class="flex items-center gap-1.5">
-          <span class="text-yellow-400 text-lg">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+      <div class="mt-6 flex items-center gap-4 text-xs md:text-sm text-gray-500">
+        <div class="flex items-center gap-1">
+          <span class="text-yellow-400">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
           <span>5.0 на Авито</span>
         </div>
-        <span class="text-brand-600">|</span>
-        <div class="flex items-center gap-1.5">
-          <span class="text-yellow-400 text-lg">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-          <span>4.9 на Яндекс.Картах</span>
+        <span class="text-gray-300">|</span>
+        <div class="flex items-center gap-1">
+          <span class="text-yellow-400">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+          <span>4.9 Яндекс.Карты</span>
         </div>
       </div>
     </div>
-    <div class="relative fade-up" style="transition-delay:.2s">
-      <div class="absolute -inset-6 bg-brand-400/20 rounded-3xl blur-3xl"></div>
-      <img src="img/hero.jpg" alt="Сап на воде в Солотче" class="relative w-full rounded-2xl shadow-2xl object-cover aspect-[3/4] max-w-md mx-auto">
+    <div class="fade-up">
+      <img src="img/hero.jpg" alt="Сап на воде" class="w-full rounded-2xl shadow-lg object-cover aspect-[4/3]">
     </div>
   </div>
 </section>
-
 
 <!-- PRICES -->
-<section id="prices" class="py-20 md:py-28 bg-gray-900">
+<section id="prices" class="py-14 md:py-20 bg-white">
   <div class="max-w-6xl mx-auto px-4">
-    <div class="text-center fade-up">
-      <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white">Цены на аренду</h2>
-      <p class="text-gray-400 mb-14 max-w-2xl mx-auto text-lg">Сдаём на сутки — забираете сап утром, возвращаете на следующий день. В комплекте доска, весло, насос, лиш, плавник и сумка. Жилеты и герметичный чехол для телефона — бесплатно по желанию.</p>
-    </div>
-    <div class="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-      <div class="bg-gray-800 border border-gray-700 rounded-2xl p-8 hover:border-brand-400 hover:shadow-lg hover:shadow-brand-500/10 transition-all duration-300 fade-up">
-        <h3 class="font-bold text-xl mb-1 text-white">Один сап</h3>
-        <p class="text-sm text-gray-400 mb-6">Для пары, семьи или одного человека. Идеально чтобы попробовать впервые.</p>
-        <div class="space-y-4">
-          <div class="flex justify-between items-baseline">
-            <span class="text-gray-300">Будни (пн–чт)</span>
-            <span class="text-3xl font-bold text-white">800 <span class="text-base font-normal text-gray-500">₽/сутки</span></span>
-          </div>
-          <div class="flex justify-between items-baseline">
-            <span class="text-gray-300">Выходные (пт–вс)</span>
-            <span class="text-3xl font-bold text-white">1 100 <span class="text-base font-normal text-gray-500">₽/сутки</span></span>
-          </div>
+    <h2 class="text-2xl md:text-3xl font-bold text-center mb-3">Цены</h2>
+    <p class="text-center text-gray-500 mb-10 max-w-xl mx-auto text-sm md:text-base">Аренда на сутки. В комплекте: доска, весло, насос, лиш, плавник, сумка. Жилеты и герметичный чехол для телефона — по желанию.</p>
+    <div class="grid md:grid-cols-2 gap-5 max-w-2xl mx-auto">
+      <div class="border border-gray-200 rounded-xl p-6 hover:border-brand-300 transition fade-up">
+        <h3 class="font-bold text-lg mb-1">Один сап</h3>
+        <p class="text-xs text-gray-400 mb-4">Для одного, пары или семьи</p>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between"><span class="text-gray-600">Будни</span><span class="font-bold">800 ₽/сутки</span></div>
+          <div class="flex justify-between"><span class="text-gray-600">Выходные</span><span class="font-bold">1 100 ₽/сутки</span></div>
         </div>
       </div>
-      <div class="bg-gray-800 border-2 border-brand-500 rounded-2xl p-8 relative overflow-hidden shadow-xl shadow-brand-500/20 fade-up" style="transition-delay:.15s">
-        <div class="absolute top-0 right-0 bg-brand-500 text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl">-19%</div>
-        <h3 class="font-bold text-xl mb-1 text-white">Компания от 4 сапов</h3>
-        <p class="text-sm text-gray-400 mb-6">ДР, корпоратив, девичник, вылазка с друзьями — любой повод подходит.</p>
-        <div class="space-y-4">
-          <div class="flex justify-between items-baseline">
-            <span class="text-gray-300">Будни (пн–чт)</span>
-            <span class="text-3xl font-bold text-brand-400">650 <span class="text-base font-normal text-gray-500">₽/сутки</span></span>
-          </div>
-          <div class="flex justify-between items-baseline">
-            <span class="text-gray-300">Выходные (пт–вс)</span>
-            <span class="text-3xl font-bold text-brand-400">900 <span class="text-base font-normal text-gray-500">₽/сутки</span></span>
-          </div>
+      <div class="border-2 border-brand-500 rounded-xl p-6 relative fade-up">
+        <span class="absolute top-0 right-0 bg-brand-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-bl-lg">-19%</span>
+        <h3 class="font-bold text-lg mb-1">От 4 сапов</h3>
+        <p class="text-xs text-gray-400 mb-4">Компания, ДР, корпоратив</p>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between"><span class="text-gray-600">Будни</span><span class="font-bold text-brand-700">650 ₽/сутки</span></div>
+          <div class="flex justify-between"><span class="text-gray-600">Выходные</span><span class="font-bold text-brand-700">900 ₽/сутки</span></div>
         </div>
       </div>
     </div>
-    <p class="text-center text-sm text-gray-500 mt-8">Электронасос — 400 ₽ на весь срок. Жилеты и чехол для телефона — бесплатно по желанию.</p>
+    <p class="text-center text-xs text-gray-400 mt-5">Электронасос — 400 ₽ на весь срок</p>
   </div>
 </section>
-
 
 <!-- FLEET -->
-<section id="fleet" class="py-20 md:py-28 bg-gradient-to-b from-gray-950 to-gray-900 text-white">
+<section id="fleet" class="py-14 md:py-20 bg-gray-50">
   <div class="max-w-6xl mx-auto px-4">
-    <div class="text-center fade-up">
-      <h2 class="text-3xl md:text-4xl font-bold mb-4">Наши сапы</h2>
-      <p class="text-gray-300 mb-14 max-w-2xl mx-auto text-lg">Три модели Funwater — устойчивые, лёгкие, выдерживают до 200 кг. Материал DropStitch не боится камней и веток. Каждый сап моется и проверяется после каждого клиента.</p>
+    <h2 class="text-2xl md:text-3xl font-bold text-center mb-3">Наши сапы</h2>
+    <p class="text-center text-gray-500 mb-10 max-w-xl mx-auto text-sm md:text-base">Три модели Funwater — устойчивые, лёгкие, до 200 кг. Моем после каждого клиента.</p>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+      <!-- KOI -->
+      <div class="bg-white rounded-xl overflow-hidden border border-gray-100 fade-up">
+        <img src="img/koi-card.jpg" alt="Funwater KOI" class="w-full aspect-square object-cover">
+        <div class="p-4">
+          <h3 class="font-bold mb-1">Funwater KOI</h3>
+          <p class="text-xs text-gray-500 mb-3">Универсальная. Подходит новичкам.</p>
+          <img src="img/koi-kit.jpg" alt="Комплект KOI" class="w-full rounded-lg aspect-[16/10] object-cover">
+        </div>
+      </div>
+      <!-- MONKEY -->
+      <div class="bg-white rounded-xl overflow-hidden border border-gray-100 fade-up">
+        <img src="img/monkey-card.jpg" alt="Funwater Monkey" class="w-full aspect-square object-cover">
+        <div class="p-4">
+          <h3 class="font-bold mb-1">Funwater Monkey</h3>
+          <p class="text-xs text-gray-500 mb-3">Самая устойчивая. С ребёнком или собакой.</p>
+          <img src="img/monkey-kit.jpg" alt="Комплект Monkey" class="w-full rounded-lg aspect-[16/10] object-cover">
+        </div>
+      </div>
+      <!-- TIKI -->
+      <div class="bg-white rounded-xl overflow-hidden border border-gray-100 fade-up">
+        <img src="img/tiki-card.jpg" alt="Funwater Tiki" class="w-full aspect-square object-cover">
+        <div class="p-4">
+          <h3 class="font-bold mb-1">Funwater Tiki</h3>
+          <p class="text-xs text-gray-500 mb-3">Маневренная. Для рек и каналов.</p>
+          <img src="img/tiki-kit.jpg" alt="Комплект Tiki" class="w-full rounded-lg aspect-[16/10] object-cover">
+        </div>
+      </div>
     </div>
-    <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
-      <div class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-brand-400/50 hover:shadow-xl hover:shadow-brand-500/10 transition-all duration-300 scale-in">
-        <img src="img/koi-card.jpg" alt="Funwater KOI" class="w-full aspect-[3/4] object-cover">
-        <div class="p-5">
-          <h3 class="font-bold text-lg mb-2">Funwater KOI</h3>
-          <p class="text-sm text-gray-400 mb-4">Универсальная доска с ярким дизайном. Подходит новичкам и для спокойных прогулок по озёрам.</p>
-          <img src="img/koi-kit.jpg" alt="Комплект KOI" class="w-full rounded-xl aspect-[16/9] object-cover">
-        </div>
-      </div>
-      <div class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-brand-400/50 hover:shadow-xl hover:shadow-brand-500/10 transition-all duration-300 scale-in" style="transition-delay:.15s">
-        <img src="img/monkey-card.jpg" alt="Funwater Monkey" class="w-full aspect-[3/4] object-cover">
-        <div class="p-5">
-          <h3 class="font-bold text-lg mb-2">Funwater Monkey</h3>
-          <p class="text-sm text-gray-400 mb-4">Самая устойчивая. Широкая палуба — удобно кататься с ребёнком или собакой.</p>
-          <img src="img/monkey-kit.jpg" alt="Комплект Monkey" class="w-full rounded-xl aspect-[16/9] object-cover">
-        </div>
-      </div>
-      <div class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-brand-400/50 hover:shadow-xl hover:shadow-brand-500/10 transition-all duration-300 scale-in" style="transition-delay:.3s">
-        <img src="img/tiki-card.jpg" alt="Funwater Tiki" class="w-full aspect-[3/4] object-cover">
-        <div class="p-5">
-          <h3 class="font-bold text-lg mb-2">Funwater Tiki</h3>
-          <p class="text-sm text-gray-400 mb-4">Маневренная доска для рек и каналов. Для тех, кто уже пробовал и хочет больше.</p>
-          <img src="img/tiki-kit.jpg" alt="Комплект Tiki" class="w-full rounded-xl aspect-[16/9] object-cover">
-        </div>
-      </div>
-    </div>
-    <div class="mt-12 bg-white/5 border border-white/10 rounded-2xl p-8 max-w-3xl mx-auto fade-up">
-      <h4 class="font-semibold text-lg mb-4 text-center">В каждый комплект входит:</h4>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-gray-300">
-        <div class="flex items-center gap-2"><span class="text-brand-400">&#10003;</span> SUP-доска</div>
-        <div class="flex items-center gap-2"><span class="text-brand-400">&#10003;</span> Весло</div>
-        <div class="flex items-center gap-2"><span class="text-brand-400">&#10003;</span> Насос</div>
-        <div class="flex items-center gap-2"><span class="text-brand-400">&#10003;</span> Лиш</div>
-        <div class="flex items-center gap-2"><span class="text-brand-400">&#10003;</span> Плавник</div>
-        <div class="flex items-center gap-2"><span class="text-brand-400">&#10003;</span> Сумка</div>
-        <div class="flex items-center gap-2"><span class="text-brand-400">&#10003;</span> Жилет*</div>
-        <div class="flex items-center gap-2"><span class="text-brand-400">&#10003;</span> Чехол для тел.*</div>
-      </div>
-      <p class="text-xs text-gray-500 mt-4 text-center">* Жилеты (взрослый + детский) и герметичный чехол для телефона — бесплатно по желанию</p>
+    <div class="mt-8 bg-white border border-gray-100 rounded-xl p-5 max-w-2xl mx-auto">
+      <p class="font-semibold text-sm mb-2 text-center">В комплекте:</p>
+      <p class="text-xs text-gray-500 text-center leading-relaxed">SUP-доска, весло, насос, лиш, плавник, сумка. По желанию: жилеты (взрослый + детский), герметичный чехол для телефона.</p>
     </div>
   </div>
 </section>
 
-
-<!-- SUP TOUR -->
-<section id="tour" class="py-20 md:py-28 bg-brand-900 text-white">
+<!-- TOUR -->
+<section id="tour" class="py-14 md:py-20 bg-white">
   <div class="max-w-6xl mx-auto px-4">
-    <div class="grid md:grid-cols-2 gap-14 items-center">
-      <div class="order-2 md:order-1 slide-left">
-        <div class="relative">
-          <div class="absolute -inset-4 bg-brand-400/20 rounded-3xl blur-2xl"></div>
-          <img src="img/tour.jpg" alt="SUP-прогулка по реке Старица" class="relative w-full rounded-2xl shadow-2xl object-cover aspect-[3/4] max-w-lg mx-auto">
-        </div>
+    <div class="grid md:grid-cols-2 gap-8 items-center">
+      <div class="order-2 md:order-1 fade-up">
+        <img src="img/tour.jpg" alt="SUP-прогулка по Старице" class="w-full rounded-2xl shadow-lg object-cover aspect-[4/3]">
       </div>
-      <div class="order-1 md:order-2 slide-right">
-        <p class="text-brand-300 font-semibold text-sm mb-3 uppercase tracking-widest">Новинка 2025</p>
-        <h2 class="text-3xl md:text-4xl font-bold mb-5">SUP-прогулка<br>по реке Старица</h2>
-        <p class="text-brand-100 mb-4 text-lg leading-relaxed">4 часа на тихой реке среди мещёрского леса. Плывёте вниз по течению — никакой усталости, только природа и кайф.</p>
-        <p class="text-brand-200 mb-6 text-sm leading-relaxed">Инструктор проведёт по маршруту, поможет новичкам, сделает фото. На финише — перекус с горячим чаем и трансфер обратно.</p>
-        <ul class="space-y-2.5 text-sm text-brand-100 mb-8">
-          <li class="flex items-start gap-2"><span class="text-brand-300">&#10003;</span>6 км, около 4 часов</li>
-          <li class="flex items-start gap-2"><span class="text-brand-300">&#10003;</span>Подходит новичкам, от 9 лет</li>
-          <li class="flex items-start gap-2"><span class="text-brand-300">&#10003;</span>Группа от 3 человек</li>
-          <li class="flex items-start gap-2"><span class="text-brand-300">&#10003;</span>Всё включено: доска, весло, жилет, перекус, трансфер</li>
+      <div class="order-1 md:order-2 fade-up">
+        <p class="text-brand-600 font-semibold text-xs uppercase tracking-wide mb-2">Новинка 2025</p>
+        <h2 class="text-2xl md:text-3xl font-bold mb-3">SUP-прогулка по Старице</h2>
+        <p class="text-sm text-gray-600 mb-4 leading-relaxed">4 часа на тихой реке среди мещёрского леса. Плывёте по течению — никакой усталости. Инструктор, перекус, трансфер обратно.</p>
+        <ul class="space-y-1.5 text-xs text-gray-500 mb-5">
+          <li>&#10003; 6 км, ~4 часа, от 9 лет</li>
+          <li>&#10003; Группа от 3 человек</li>
+          <li>&#10003; Всё включено: доска, весло, жилет, перекус, трансфер</li>
         </ul>
-        <div class="flex items-baseline gap-3 mb-6">
-          <span class="text-5xl font-bold text-white">2 500</span>
-          <span class="text-brand-200 text-lg">₽ / чел</span>
+        <div class="flex items-baseline gap-2 mb-4">
+          <span class="text-3xl font-bold">2 500</span>
+          <span class="text-gray-400 text-sm">₽ / чел</span>
         </div>
-        <a href="tel:+79156053803" class="inline-block bg-white text-brand-800 px-7 py-3.5 rounded-xl font-bold hover:bg-brand-50 transition shadow-xl text-lg">Записаться</a>
+        <a href="tel:+79156053803" class="inline-block bg-brand-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-brand-700 transition text-sm">Записаться</a>
       </div>
     </div>
   </div>
 </section>
 
-
-<!-- WHY US -->
-<section id="why" class="py-20 md:py-28 bg-gray-900">
+<!-- WHY -->
+<section class="py-14 md:py-20 bg-gray-50">
   <div class="max-w-6xl mx-auto px-4">
-    <div class="text-center fade-up">
-      <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white">Почему выбирают нас</h2>
-      <p class="text-gray-400 mb-14 max-w-2xl mx-auto text-lg">Не просто сдаём доски — создаём впечатления. Чистое оборудование, подробный инструктаж, рекомендации по маршрутам и поддержка на связи пока катаетесь.</p>
-    </div>
-    <div class="grid md:grid-cols-3 gap-5">
-      <div class="bg-gray-800/80 border border-gray-700 rounded-2xl p-7 hover:border-brand-500/50 hover:shadow-lg transition-all duration-300 fade-up">
-        <h3 class="font-bold text-lg mb-2 text-white">Чистые сапы</h3>
-        <p class="text-sm text-gray-400 leading-relaxed">Моем и проверяем каждый сап после каждого клиента. Получаете оборудование в идеальном состоянии.</p>
+    <h2 class="text-2xl md:text-3xl font-bold text-center mb-8">Почему мы</h2>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <div class="bg-white rounded-xl p-5 border border-gray-100 fade-up">
+        <p class="font-semibold text-sm mb-1">Чистые сапы</p>
+        <p class="text-xs text-gray-500">Моем после каждого клиента</p>
       </div>
-      <div class="bg-gray-800/80 border border-gray-700 rounded-2xl p-7 hover:border-brand-500/50 hover:shadow-lg transition-all duration-300 fade-up" style="transition-delay:.1s">
-        <h3 class="font-bold text-lg mb-2 text-white">Без залога</h3>
-        <p class="text-sm text-gray-400 leading-relaxed">Работаем по договору. Паспорт РФ + 18 лет — всё что нужно. Никаких депозитов и блокировок.</p>
+      <div class="bg-white rounded-xl p-5 border border-gray-100 fade-up">
+        <p class="font-semibold text-sm mb-1">Без залога</p>
+        <p class="text-xs text-gray-500">По договору, паспорт + 18 лет</p>
       </div>
-      <div class="bg-gray-800/80 border border-gray-700 rounded-2xl p-7 hover:border-brand-500/50 hover:shadow-lg transition-all duration-300 fade-up" style="transition-delay:.2s">
-        <h3 class="font-bold text-lg mb-2 text-white">Бесплатный инструктаж</h3>
-        <p class="text-sm text-gray-400 leading-relaxed">15 минут — и вы уверенно стоите на доске. Покажем как грести, поворачивать и садиться обратно.</p>
+      <div class="bg-white rounded-xl p-5 border border-gray-100 fade-up">
+        <p class="font-semibold text-sm mb-1">Инструктаж</p>
+        <p class="text-xs text-gray-500">Проводим перед каждой выдачей</p>
       </div>
-      <div class="bg-gray-800/80 border border-gray-700 rounded-2xl p-7 hover:border-brand-500/50 hover:shadow-lg transition-all duration-300 fade-up" style="transition-delay:.1s">
-        <h3 class="font-bold text-lg mb-2 text-white">Жилеты и чехлы</h3>
-        <p class="text-sm text-gray-400 leading-relaxed">Спасательные жилеты (взрослые и детские) и герметичные чехлы для телефона — бесплатно по желанию.</p>
+      <div class="bg-white rounded-xl p-5 border border-gray-100 fade-up">
+        <p class="font-semibold text-sm mb-1">Жилеты и чехлы</p>
+        <p class="text-xs text-gray-500">По желанию, бесплатно</p>
       </div>
-      <div class="bg-gray-800/80 border border-gray-700 rounded-2xl p-7 hover:border-brand-500/50 hover:shadow-lg transition-all duration-300 fade-up" style="transition-delay:.2s">
-        <h3 class="font-bold text-lg mb-2 text-white">Прямо у воды</h3>
-        <p class="text-sm text-gray-400 leading-relaxed">Точка выдачи в ГК «Гайдаровец» — через 5 минут уже на воде. Не нужно тащить сап через полгорода.</p>
+      <div class="bg-white rounded-xl p-5 border border-gray-100 fade-up">
+        <p class="font-semibold text-sm mb-1">Рядом с водой</p>
+        <p class="text-xs text-gray-500">ГК «Гайдаровец», 5 мин до воды</p>
       </div>
-      <div class="bg-gray-800/80 border border-gray-700 rounded-2xl p-7 hover:border-brand-500/50 hover:shadow-lg transition-all duration-300 fade-up" style="transition-delay:.3s">
-        <h3 class="font-bold text-lg mb-2 text-white">Высший рейтинг</h3>
-        <p class="text-sm text-gray-400 leading-relaxed">5.0 на Авито, 4.9 на Яндекс.Картах. Работаем с 2023 года — просто делаем своё дело хорошо.</p>
+      <div class="bg-white rounded-xl p-5 border border-gray-100 fade-up">
+        <p class="font-semibold text-sm mb-1">5.0 Авито / 4.9 Карты</p>
+        <p class="text-xs text-gray-500">Работаем с 2023 года</p>
       </div>
     </div>
   </div>
 </section>
-
 
 <!-- LOCATION -->
-<section id="location" class="py-20 md:py-28 bg-gray-950 text-white">
+<section id="location" class="py-14 md:py-20 bg-white">
   <div class="max-w-6xl mx-auto px-4">
-    <div class="text-center fade-up">
-      <h2 class="text-3xl md:text-4xl font-bold mb-4">Где катаемся</h2>
-      <p class="text-gray-400 mb-14 max-w-2xl mx-auto text-lg">Солотча — курортный посёлок в 20 км от Рязани. Сосны, тишина, чистая вода. Рядом с точкой выдачи — несколько мест для катания на любой вкус.</p>
+    <h2 class="text-2xl md:text-3xl font-bold text-center mb-3">Где катаемся</h2>
+    <p class="text-center text-gray-500 mb-8 text-sm max-w-md mx-auto">Солотча — 20 км от Рязани. Сосны, тишина, чистая вода.</p>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+      <div class="bg-gray-50 rounded-lg p-3 text-center"><p class="font-semibold text-xs">Река Старица</p></div>
+      <div class="bg-gray-50 rounded-lg p-3 text-center"><p class="font-semibold text-xs">Ласковское озеро</p></div>
+      <div class="bg-gray-50 rounded-lg p-3 text-center"><p class="font-semibold text-xs">Уржинское озеро</p></div>
+      <div class="bg-gray-50 rounded-lg p-3 text-center"><p class="font-semibold text-xs">Река Ока</p></div>
     </div>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-14 fade-up">
-      <div class="bg-white/5 border border-white/10 rounded-xl p-5 text-center hover:bg-white/10 transition">
-        <p class="font-bold text-white">Река Старица</p>
-        <p class="text-xs text-gray-400 mt-1">Тихая, для новичков и семей</p>
-      </div>
-      <div class="bg-white/5 border border-white/10 rounded-xl p-5 text-center hover:bg-white/10 transition">
-        <p class="font-bold text-white">Ласковское озеро</p>
-        <p class="text-xs text-gray-400 mt-1">Чистейшая вода, закаты</p>
-      </div>
-      <div class="bg-white/5 border border-white/10 rounded-xl p-5 text-center hover:bg-white/10 transition">
-        <p class="font-bold text-white">Уржинское озеро</p>
-        <p class="text-xs text-gray-400 mt-1">Просторное, для компаний</p>
-      </div>
-      <div class="bg-white/5 border border-white/10 rounded-xl p-5 text-center hover:bg-white/10 transition">
-        <p class="font-bold text-white">Река Ока</p>
-        <p class="text-xs text-gray-400 mt-1">Для опытных, с течением</p>
-      </div>
-    </div>
-    <div class="rounded-2xl overflow-hidden shadow-2xl fade-up">
-      <iframe src="https://yandex.ru/map-widget/v1/?z=12&ol=biz&oid=32822707925" width="100%" height="400" frameborder="0" loading="lazy"></iframe>
+    <div class="rounded-xl overflow-hidden shadow-sm">
+      <iframe src="https://yandex.ru/map-widget/v1/?z=12&ol=biz&oid=32822707925" width="100%" height="350" frameborder="0" loading="lazy"></iframe>
     </div>
   </div>
 </section>
 
 <!-- CONTACTS -->
-<section id="contacts" class="py-20 md:py-28 bg-gray-900 text-white">
+<section id="contacts" class="py-14 md:py-20 bg-gray-50">
   <div class="max-w-6xl mx-auto px-4 text-center">
-    <div class="fade-up">
-      <h2 class="text-3xl md:text-4xl font-bold mb-4">Забронировать</h2>
-      <p class="text-gray-400 mb-10 max-w-lg mx-auto text-lg">Позвоните или напишите — расскажу детали, помогу выбрать сап и забронирую на удобный день.</p>
+    <h2 class="text-2xl md:text-3xl font-bold mb-3">Забронировать</h2>
+    <p class="text-gray-500 mb-8 text-sm max-w-sm mx-auto">Позвоните или напишите — помогу выбрать сап и забронирую.</p>
+    <div class="flex flex-col sm:flex-row gap-3 justify-center mb-10">
+      <a href="tel:+79156053803" class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-xl font-semibold transition">+7 915 605-38-03</a>
+      <a href="https://www.avito.ru/brands/6cf8014eaebdd1df8f3f94bd1f3e6e82/all/predlozheniya_uslug?sellerId=22d13ecf193b40346434a4135102316b" target="_blank" class="border border-gray-300 text-gray-700 px-6 py-3 rounded-xl font-semibold hover:border-brand-400 transition">Написать на Авито</a>
     </div>
-    <div class="flex flex-col sm:flex-row gap-4 justify-center mb-14 fade-up">
-      <a href="tel:+79156053803" class="bg-brand-600 hover:bg-brand-500 text-white px-8 py-4 rounded-xl font-bold transition text-lg shadow-lg">+7 915 605-38-03</a>
-      <a href="https://www.avito.ru/brands/6cf8014eaebdd1df8f3f94bd1f3e6e82/all/predlozheniya_uslug?sellerId=22d13ecf193b40346434a4135102316b" target="_blank" class="bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-xl font-bold transition text-lg border border-white/20">Авито</a>
-      <a href="https://vk.com/suprent62" target="_blank" class="bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-xl font-bold transition text-lg border border-white/20">ВКонтакте</a>
-    </div>
-    <div class="grid md:grid-cols-3 gap-8 text-sm text-gray-400 max-w-2xl mx-auto fade-up">
-      <div><p class="text-white font-semibold mb-1">Адрес</p><p>Рязань, Солотча<br>ГК «Гайдаровец»</p></div>
-      <div><p class="text-white font-semibold mb-1">Режим</p><p>Ежедневно 9:00–21:00<br>Сезон: май — сентябрь</p></div>
-      <div><p class="text-white font-semibold mb-1">Документы</p><p>Паспорт РФ, 18+<br>Договор аренды</p></div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-gray-500 max-w-md mx-auto">
+      <div><p class="font-semibold text-gray-700 mb-0.5">Адрес</p>Солотча, ГК «Гайдаровец»</div>
+      <div><p class="font-semibold text-gray-700 mb-0.5">Режим</p>9:00–21:00, май–сентябрь</div>
+      <div><p class="font-semibold text-gray-700 mb-0.5">Документы</p>Паспорт РФ, 18+</div>
     </div>
   </div>
 </section>
 
-<footer class="bg-gray-950 border-t border-white/5 text-gray-600 py-6 text-center text-xs">
-  <p>2023–2026 SUPrent62. Рязань, Солотча.</p>
+<footer class="bg-white border-t border-gray-100 text-gray-400 py-4 text-center text-[10px]">
+  2023–2026 SUPrent62. Рязань, Солотча.
 </footer>
 
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
-  const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible')})},{threshold:.1,rootMargin:'0px 0px -50px 0px'});
-  document.querySelectorAll('.fade-up,.scale-in,.slide-left,.slide-right').forEach(el=>obs.observe(el));
+  const o=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible')})},{threshold:.15});
+  document.querySelectorAll('.fade-up').forEach(el=>o.observe(el));
 });
 </script>
 </body>
