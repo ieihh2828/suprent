@@ -1,0 +1,22 @@
+{
+  "name": "suprent",
+  "version": "1.0.0",
+  "description": "Парсер выдачи Авито для разбора рынка аренды сапбордов (Рязань) и\r последующей сборки сайта бизнеса.",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ieihh2828/suprent.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ieihh2828/suprent/issues"
+  },
+  "homepage": "https://github.com/ieihh2828/suprent#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.9.0"
+  }
+}
