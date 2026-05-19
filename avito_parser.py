@@ -50,6 +50,11 @@ DELAY_BETWEEN_LISTINGS = (4.0, 9.0)
 DELAY_BETWEEN_SEARCH_PAGES = (3.0, 6.0)
 PAGE_TIMEOUT_MS = 60_000
 
+# Only keep listings whose URL path contains one of these city slugs.
+# Avito mixes results from neighbouring cities when local matches are few.
+# Add more slugs (e.g. "ryazanskaya_oblast_*") if you want regional results.
+ALLOWED_CITY_SLUGS = ["/ryazan/"]
+
 USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
     "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -113,8 +118,17 @@ async def wait_for_no_captcha(page: Page) -> bool:
     return False
 
 
+def is_allowed_city(url: str) -> bool:
+    """Keep only listings located in our target city/cities."""
+    return any(slug in url for slug in ALLOWED_CITY_SLUGS)
+
+
 async def collect_listing_urls(page: Page, search_url: str) -> list[str]:
-    """Open a search results page, paginate, collect every listing URL."""
+    """Open a search results page, paginate, collect every listing URL.
+
+    Stops paginating once Avito starts showing "from other cities" results.
+    Filters URLs by ALLOWED_CITY_SLUGS.
+    """
     print(f"\n=== Search: {search_url}")
     await page.goto(search_url, wait_until="domcontentloaded", timeout=PAGE_TIMEOUT_MS)
     await sleep_random(2, 4)
@@ -126,18 +140,28 @@ async def collect_listing_urls(page: Page, search_url: str) -> list[str]:
     max_pages = 15  # safety cap
 
     while page_num <= max_pages:
+        # Scroll to make sure all items are loaded.
+        for _ in range(4):
+            await page.evaluate("window.scrollBy(0, document.body.scrollHeight)")
+            await sleep_random(0.4, 0.9)
+
+        # Detect "results from other cities" marker - everything after it is junk.
+        try:
+            page_text = await page.locator("body").inner_text(timeout=5_000)
+        except Exception:
+            page_text = ""
+        if "встречаются объявления из других городов" in page_text.lower() \
+                or "из других городов" in page_text.lower():
+            other_cities_marker = True
+        else:
+            other_cities_marker = False
+
         # Try multiple selectors for listing items - Avito changes them.
         item_selectors = [
             'div[data-marker="item"] a[data-marker="item-title"]',
             'div[data-marker="item"] a[itemprop="url"]',
             'div[class*="iva-item-root"] a[href*="/items/"]',
         ]
-
-        # Scroll to make sure all items are loaded.
-        for _ in range(4):
-            await page.evaluate("window.scrollBy(0, document.body.scrollHeight)")
-            await sleep_random(0.4, 0.9)
-
         anchors = []
         for sel in item_selectors:
             anchors = await page.query_selector_all(sel)
@@ -149,17 +173,29 @@ async def collect_listing_urls(page: Page, search_url: str) -> list[str]:
             break
 
         added = 0
+        skipped_city = 0
         for a in anchors:
             href = await a.get_attribute("href")
             if not href:
                 continue
             full = urljoin("https://www.avito.ru", href.split("?")[0])
+            if not is_allowed_city(full):
+                skipped_city += 1
+                continue
             if full not in seen:
                 seen.add(full)
                 urls.append(full)
                 added += 1
 
-        print(f"  page {page_num}: +{added} listings (total: {len(urls)})")
+        msg = f"  page {page_num}: +{added} listings (total: {len(urls)})"
+        if skipped_city:
+            msg += f" | skipped {skipped_city} from other cities"
+        print(msg)
+
+        # If Avito is now showing other-cities results, no point paginating further.
+        if other_cities_marker and added == 0:
+            print("  -> reached 'other cities' section, stopping pagination")
+            break
 
         next_btn = await page.query_selector('a[data-marker="pagination-button/nextPage"]')
         if not next_btn:
@@ -263,9 +299,31 @@ def save_results(results: list[dict]) -> None:
     print(f"  saved -> {json_path.relative_to(ROOT)} | {csv_path.relative_to(ROOT)}")
 
 
+def load_existing_results() -> list[dict]:
+    """Resume support: load already-scraped listings from previous run."""
+    json_path = OUTPUT_DIR / "competitors.json"
+    if not json_path.exists():
+        return []
+    try:
+        data = json.loads(json_path.read_text(encoding="utf-8"))
+        if isinstance(data, list):
+            return data
+    except Exception:
+        pass
+    return []
+
+
 async def run(playwright: Playwright) -> None:
     urls = read_urls()
     OUTPUT_DIR.mkdir(exist_ok=True)
+
+    # Resume: load what's already been scraped, skip those URLs.
+    existing = load_existing_results()
+    # Only keep records that match current city filter and have no error.
+    existing = [r for r in existing if is_allowed_city(r.get("url", "")) and not r.get("error")]
+    already_done: set[str] = {r["url"] for r in existing if r.get("url")}
+    if already_done:
+        print(f"=== Resume: {len(already_done)} listings already scraped, will skip them.")
 
     browser: Browser = await playwright.chromium.launch(headless=False)
     context: BrowserContext = await browser.new_context(
@@ -284,20 +342,22 @@ async def run(playwright: Playwright) -> None:
                 seen.add(lurl)
                 all_listings.append(lurl)
 
-    print(f"\n=== Total unique listings to parse: {len(all_listings)}\n")
+    todo = [u for u in all_listings if u not in already_done]
+    print(f"\n=== Found {len(all_listings)} listings in target city(s).")
+    print(f"=== {len(todo)} new to scrape, {len(all_listings) - len(todo)} already done.\n")
 
-    results: list[dict] = []
-    for i, lurl in enumerate(all_listings, 1):
-        print(f"[{i}/{len(all_listings)}] {lurl}")
+    results: list[dict] = list(existing)
+    for i, lurl in enumerate(todo, 1):
+        print(f"[{i}/{len(todo)}] {lurl}")
         rec = await parse_listing(page, lurl)
         results.append(rec)
-        if i % 5 == 0 or i == len(all_listings):
+        if i % 5 == 0 or i == len(todo):
             save_results(results)
         await sleep_random(*DELAY_BETWEEN_LISTINGS)
 
     save_results(results)
     await browser.close()
-    print("\nDone.")
+    print(f"\nDone. Total records: {len(results)}")
 
 
 async def main() -> None:
