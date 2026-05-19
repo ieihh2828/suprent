@@ -212,6 +212,28 @@ async def collect_listing_urls(page: Page, search_url: str) -> list[str]:
     return urls
 
 
+async def expand_description(page: Page) -> None:
+    """Click 'Читать полностью' / 'Показать полностью' if present, so the
+    description isn't truncated."""
+    expand_selectors = [
+        'button:has-text("Читать полностью")',
+        'a:has-text("Читать полностью")',
+        'button:has-text("Показать полностью")',
+        'a:has-text("Показать полностью")',
+        'button:has-text("Развернуть")',
+        '[data-marker="item-view/expand-description"]',
+    ]
+    for sel in expand_selectors:
+        try:
+            loc = page.locator(sel).first
+            if await loc.is_visible(timeout=1_000):
+                await loc.click(timeout=2_000)
+                await asyncio.sleep(0.4)
+                return
+        except Exception:
+            continue
+
+
 async def parse_listing(page: Page, url: str) -> dict:
     """Open one listing page and extract structured info."""
     record: dict = {"url": url, "scraped_at": datetime.now().isoformat(timespec="seconds")}
@@ -226,6 +248,9 @@ async def parse_listing(page: Page, url: str) -> dict:
         record["error"] = str(e)
         return record
 
+    # Expand "Читать полностью" if visible.
+    await expand_description(page)
+
     record["title"] = await safe_text(page, 'h1[data-marker="item-view/title-info"]') \
         or await safe_text(page, "h1")
 
@@ -235,6 +260,10 @@ async def parse_listing(page: Page, url: str) -> dict:
 
     record["location"] = await safe_text(page, '[itemprop="address"]') \
         or await safe_text(page, '[data-marker="item-view/item-address"]')
+
+    # Address block (often more specific than location: street, building).
+    record["address"] = await safe_text(page, '[itemprop="streetAddress"]') \
+        or await safe_text(page, '[data-marker="delivery-options/address"]')
 
     record["description"] = await safe_text(page, '[data-marker="item-view/item-description"]') \
         or await safe_text(page, 'div[itemprop="description"]')
@@ -277,7 +306,44 @@ async def parse_listing(page: Page, url: str) -> dict:
     m = re.search(r"_(\d{8,})$", url)
     record["item_id"] = m.group(1) if m else None
 
+    # "Ctrl+A on the listing" - capture every visible piece of text in the
+    # main listing block. Useful as a safety net so we don't miss anything
+    # (extra params, address, schedule, contacts, etc.).
+    full_text = None
+    for sel in [
+        '[data-marker="item-view"]',
+        'div[class*="item-view"]',
+        "main",
+    ]:
+        try:
+            el = await page.query_selector(sel)
+            if el:
+                full_text = (await el.inner_text()).strip()
+                if full_text:
+                    break
+        except Exception:
+            continue
+    record["full_text"] = full_text
+
     return record
+
+
+def _sort_key(r: dict) -> tuple:
+    """Sort by city slug, then by seller rating desc, then by reviews desc."""
+    url = r.get("url") or ""
+    city = ""
+    m = re.search(r"avito\.ru/([^/]+)/", url)
+    if m:
+        city = m.group(1)
+    rating = 0.0
+    rating_str = (r.get("seller_rating") or "").replace(",", ".")
+    try:
+        rating = float(rating_str)
+    except Exception:
+        pass
+    reviews = -int(r.get("seller_reviews_count") or 0)
+    # city asc, rating desc (so negative), reviews desc
+    return (city, -rating, reviews, url)
 
 
 def save_results(results: list[dict]) -> None:
@@ -285,15 +351,32 @@ def save_results(results: list[dict]) -> None:
     json_path = OUTPUT_DIR / "competitors.json"
     csv_path = OUTPUT_DIR / "competitors.csv"
 
-    with json_path.open("w", encoding="utf-8") as f:
-        json.dump(results, f, ensure_ascii=False, indent=2)
+    sorted_results = sorted(results, key=_sort_key)
 
-    if results:
-        keys = sorted({k for r in results for k in r.keys()})
+    with json_path.open("w", encoding="utf-8") as f:
+        json.dump(sorted_results, f, ensure_ascii=False, indent=2)
+
+    if sorted_results:
+        # Order columns sensibly for human reading in Excel.
+        preferred_order = [
+            "title", "price", "price_period",
+            "location", "address",
+            "category", "breadcrumbs",
+            "seller_name", "seller_type", "seller_rating",
+            "seller_reviews_count", "seller_summary", "seller_registered",
+            "photos_count", "posted",
+            "description",
+            "full_text",
+            "url", "item_id", "scraped_at", "error",
+        ]
+        all_keys = {k for r in sorted_results for k in r.keys()}
+        keys = [k for k in preferred_order if k in all_keys]
+        keys += sorted(all_keys - set(keys))
+
         with csv_path.open("w", encoding="utf-8", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=keys)
             writer.writeheader()
-            for r in results:
+            for r in sorted_results:
                 writer.writerow({k: r.get(k, "") for k in keys})
 
     print(f"  saved -> {json_path.relative_to(ROOT)} | {csv_path.relative_to(ROOT)}")
