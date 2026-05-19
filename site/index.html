@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SUPrent62 — Прокат сапов в Солотче, Рязань</title>
+  <meta name="description" content="Аренда сапбордов в Солотче. 8 досок Funwater, без залога, бесплатный инструктаж. Будни 800₽, выходные 1100₽. Компаниям от 4 сапов — скидка 19%.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwindcss.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand: { 50:'#f0fdfa', 100:'#ccfbf1', 200:'#99f6e4', 300:'#5eead4', 400:'#2dd4bf', 500:'#14b8a6', 600:'#0d9488', 700:'#0f766e', 800:'#115e59', 900:'#134e4a' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="font-sans text-gray-800 bg-white antialiased">
+
+
+<!-- NAV -->
+<nav class="fixed top-0 w-full bg-white/90 backdrop-blur-sm z-50 border-b border-gray-100">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+    <a href="#" class="text-xl font-bold text-brand-700">SUPrent62</a>
+    <div class="hidden md:flex gap-6 text-sm font-medium text-gray-600">
+      <a href="#prices" class="hover:text-brand-600 transition">Цены</a>
+      <a href="#included" class="hover:text-brand-600 transition">Комплект</a>
+      <a href="#tour" class="hover:text-brand-600 transition">Прогулки</a>
+      <a href="#why" class="hover:text-brand-600 transition">Почему мы</a>
+      <a href="#location" class="hover:text-brand-600 transition">Где катаемся</a>
+      <a href="#contacts" class="hover:text-brand-600 transition">Контакты</a>
+    </div>
+    <a href="tel:+79156053803" class="bg-brand-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-brand-700 transition">Позвонить</a>
+  </div>
+</nav>
+
+
+<!-- HERO -->
+<section class="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-br from-brand-50 via-white to-cyan-50"></div>
+  <div class="relative max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-8 items-center">
+    <div>
+      <p class="text-brand-600 font-semibold text-sm mb-2 uppercase tracking-wide">Солотча, Рязань</p>
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-gray-900">
+        Прокат сапов<br><span class="text-brand-600">на сутки</span>
+      </h1>
+      <p class="mt-4 text-lg text-gray-600 max-w-lg">
+        Забираете утром — катаетесь хоть до позднего вечера. Без залога, по договору. Бесплатный инструктаж.
+      </p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="https://wa.me/79156053803" target="_blank" class="bg-brand-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-brand-700 transition shadow-lg shadow-brand-200">Написать в WhatsApp</a>
+        <a href="#prices" class="bg-white border-2 border-brand-600 text-brand-700 px-6 py-3 rounded-xl font-semibold hover:bg-brand-50 transition">Смотреть цены</a>
+      </div>
+      <div class="mt-8 flex items-center gap-4 text-sm text-gray-500">
+        <div class="flex items-center gap-1">
+          <span class="text-yellow-400 text-lg">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+          <span>4.9 на Яндекс.Картах</span>
+        </div>
+        <span class="text-gray-300">|</span>
+        <span>Сдаём с 2023 года</span>
+      </div>
+    </div>
+    <div class="relative">
+      <div class="aspect-[4/3] rounded-2xl bg-gradient-to-br from-brand-100 to-cyan-100 flex items-center justify-center overflow-hidden shadow-2xl">
+        <!-- Replace with real photo: img/hero.jpg -->
+        <p class="text-brand-400 text-center p-8 text-sm">Сюда — фото сапов на воде<br>(заменить на img/hero.jpg)</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- PRICES -->
+<section id="prices" class="py-16 md:py-24 bg-white">
+  <div class="max-w-6xl mx-auto px-4">
+    <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Цены на аренду</h2>
+    <p class="text-center text-gray-500 mb-12 max-w-xl mx-auto">Сдаём на сутки. В комплекте всё что нужно — просто берёшь и катаешься.</p>
+    <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+      <!-- Regular -->
+      <div class="border-2 border-gray-200 rounded-2xl p-8 hover:border-brand-300 transition">
+        <h3 class="font-bold text-lg mb-1">Один сап</h3>
+        <p class="text-sm text-gray-500 mb-6">Для пары, семьи или одного</p>
+        <div class="space-y-3">
+          <div class="flex justify-between items-baseline">
+            <span class="text-gray-600">Будни (пн-чт)</span>
+            <span class="text-2xl font-bold">800 <span class="text-base font-normal text-gray-400">₽/сутки</span></span>
+          </div>
+          <div class="flex justify-between items-baseline">
+            <span class="text-gray-600">Выходные (пт-вс)</span>
+            <span class="text-2xl font-bold">1 100 <span class="text-base font-normal text-gray-400">₽/сутки</span></span>
+          </div>
+        </div>
+      </div>
+      <!-- Group -->
+      <div class="border-2 border-brand-500 rounded-2xl p-8 relative overflow-hidden shadow-lg shadow-brand-100">
+        <div class="absolute top-0 right-0 bg-brand-600 text-white text-xs font-bold px-3 py-1 rounded-bl-xl">-19%</div>
+        <h3 class="font-bold text-lg mb-1">Компания от 4 сапов</h3>
+        <p class="text-sm text-gray-500 mb-6">ДР, корпоратив, девичник, друзья</p>
+        <div class="space-y-3">
+          <div class="flex justify-between items-baseline">
+            <span class="text-gray-600">Будни (пн-чт)</span>
+            <span class="text-2xl font-bold text-brand-700">650 <span class="text-base font-normal text-gray-400">₽/сутки</span></span>
+          </div>
+          <div class="flex justify-between items-baseline">
+            <span class="text-gray-600">Выходные (пт-вс)</span>
+            <span class="text-2xl font-bold text-brand-700">900 <span class="text-base font-normal text-gray-400">₽/сутки</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="text-center text-sm text-gray-400 mt-6">Электронасос — доп. опция 400 ₽ на весь срок аренды</p>
+  </div>
+</section>
+
+
+<!-- INCLUDED -->
+<section id="included" class="py-16 md:py-24 bg-gray-50">
+  <div class="max-w-6xl mx-auto px-4">
+    <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Что в комплекте</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="bg-white rounded-xl p-6 text-center shadow-sm">
+        <div class="text-3xl mb-3">🏄</div>
+        <p class="font-semibold text-sm">SUP-доска Funwater</p>
+        <p class="text-xs text-gray-400 mt-1">KOI / Monkey / Tiki<br>до 200 кг</p>
+      </div>
+      <div class="bg-white rounded-xl p-6 text-center shadow-sm">
+        <div class="text-3xl mb-3">🏒</div>
+        <p class="font-semibold text-sm">Весло</p>
+        <p class="text-xs text-gray-400 mt-1">Регулируется по росту</p>
+      </div>
+      <div class="bg-white rounded-xl p-6 text-center shadow-sm">
+        <div class="text-3xl mb-3">💨</div>
+        <p class="font-semibold text-sm">Насос</p>
+        <p class="text-xs text-gray-400 mt-1">Ручной с манометром</p>
+      </div>
+      <div class="bg-white rounded-xl p-6 text-center shadow-sm">
+        <div class="text-3xl mb-3">🔗</div>
+        <p class="font-semibold text-sm">Страховочный лиш</p>
+        <p class="text-xs text-gray-400 mt-1">Крепится к ноге</p>
+      </div>
+      <div class="bg-white rounded-xl p-6 text-center shadow-sm">
+        <div class="text-3xl mb-3">🐟</div>
+        <p class="font-semibold text-sm">Плавник</p>
+        <p class="text-xs text-gray-400 mt-1">Съёмный</p>
+      </div>
+      <div class="bg-white rounded-xl p-6 text-center shadow-sm">
+        <div class="text-3xl mb-3">🎒</div>
+        <p class="font-semibold text-sm">Сумка-рюкзак</p>
+        <p class="text-xs text-gray-400 mt-1">Для переноски</p>
+      </div>
+      <div class="bg-white rounded-xl p-6 text-center shadow-sm">
+        <div class="text-3xl mb-3">🦺</div>
+        <p class="font-semibold text-sm">Жилеты</p>
+        <p class="text-xs text-gray-400 mt-1">Взрослые + детские<br>бесплатно по запросу</p>
+      </div>
+      <div class="bg-white rounded-xl p-6 text-center shadow-sm">
+        <div class="text-3xl mb-3">📱</div>
+        <p class="font-semibold text-sm">Чехол для телефона</p>
+        <p class="text-xs text-gray-400 mt-1">Водонепроницаемый<br>на шею, бесплатно</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- SUP TOUR -->
+<section id="tour" class="py-16 md:py-24 bg-white">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div class="order-2 md:order-1">
+        <div class="aspect-[4/3] rounded-2xl bg-gradient-to-br from-green-100 to-cyan-100 flex items-center justify-center overflow-hidden shadow-xl">
+          <!-- Replace with real photo: img/tour.jpg -->
+          <p class="text-green-400 text-center p-8 text-sm">Сюда — фото прогулки по Старице<br>(заменить на img/tour.jpg)</p>
+        </div>
+      </div>
+      <div class="order-1 md:order-2">
+        <p class="text-brand-600 font-semibold text-sm mb-2 uppercase tracking-wide">Новинка</p>
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">SUP-прогулка<br>по реке Старица</h2>
+        <p class="text-gray-600 mb-6">4 часа на тихой реке среди мещёрского леса. С инструктором, перекусом и трансфером обратно к старту.</p>
+        <ul class="space-y-3 text-sm text-gray-700 mb-8">
+          <li class="flex items-start gap-2"><span class="text-brand-500 mt-0.5">&#10003;</span>Протяжённость: 6 км</li>
+          <li class="flex items-start gap-2"><span class="text-brand-500 mt-0.5">&#10003;</span>Длительность: ~4 часа</li>
+          <li class="flex items-start gap-2"><span class="text-brand-500 mt-0.5">&#10003;</span>Уровень: новичок, от 9 лет</li>
+          <li class="flex items-start gap-2"><span class="text-brand-500 mt-0.5">&#10003;</span>Компания: от 3 человек</li>
+          <li class="flex items-start gap-2"><span class="text-brand-500 mt-0.5">&#10003;</span>Всё включено: доска, весло, лиш, жилет, перекус, вода, трансфер</li>
+          <li class="flex items-start gap-2"><span class="text-brand-500 mt-0.5">&#10003;</span>Инструктаж и сопровождение</li>
+        </ul>
+        <div class="flex items-baseline gap-2 mb-6">
+          <span class="text-4xl font-bold text-brand-700">2 500</span>
+          <span class="text-gray-400">₽ / чел</span>
+        </div>
+        <a href="https://wa.me/79156053803?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5!%20%D0%98%D0%BD%D1%82%D0%B5%D1%80%D0%B5%D1%81%D1%83%D0%B5%D1%82%20SUP-%D0%BF%D1%80%D0%BE%D0%B3%D1%83%D0%BB%D0%BA%D0%B0" target="_blank" class="inline-block bg-brand-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-brand-700 transition shadow-lg shadow-brand-200">Записаться на прогулку</a>
+        <p class="text-xs text-gray-400 mt-3">По выходным и праздникам. В будни — по договорённости от 5 человек.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- WHY US -->
+<section id="why" class="py-16 md:py-24 bg-gray-50">
+  <div class="max-w-6xl mx-auto px-4">
+    <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Почему выбирают нас</h2>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="bg-white rounded-2xl p-8 shadow-sm">
+        <div class="text-3xl mb-4">🧼</div>
+        <h3 class="font-bold text-lg mb-2">Чистые сапы</h3>
+        <p class="text-sm text-gray-600">Моем и проверяем каждый сап после каждого клиента. Получаете в идеальном состоянии.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-8 shadow-sm">
+        <div class="text-3xl mb-4">📋</div>
+        <h3 class="font-bold text-lg mb-2">Без залога</h3>
+        <p class="text-sm text-gray-600">Работаем по договору аренды. Нужен только паспорт. Никаких депозитов и рисков.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-8 shadow-sm">
+        <div class="text-3xl mb-4">🎓</div>
+        <h3 class="font-bold text-lg mb-2">Бесплатный инструктаж</h3>
+        <p class="text-sm text-gray-600">15 минут — и вы уверенно стоите на доске. Даже если никогда не пробовали.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-8 shadow-sm">
+        <div class="text-3xl mb-4">🧾</div>
+        <h3 class="font-bold text-lg mb-2">Чеки для компаний</h3>
+        <p class="text-sm text-gray-600">Самозанятый — выдаю чек и акт выполненных работ. Удобно для тимбилдингов.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-8 shadow-sm">
+        <div class="text-3xl mb-4">📍</div>
+        <h3 class="font-bold text-lg mb-2">Прямо в Солотче</h3>
+        <p class="text-sm text-gray-600">Точка выдачи рядом с водой. Не нужно тащить сап через полгорода — забрал и поехал кататься.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-8 shadow-sm">
+        <div class="text-3xl mb-4">⭐</div>
+        <h3 class="font-bold text-lg mb-2">4.9 на Я.Картах</h3>
+        <p class="text-sm text-gray-600">Работаем с 2023 года. 26+ отзывов — ни одного негативного. Просто делаем своё дело хорошо.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- LOCATION -->
+<section id="location" class="py-16 md:py-24 bg-white">
+  <div class="max-w-6xl mx-auto px-4">
+    <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Где катаемся</h2>
+    <p class="text-center text-gray-500 mb-12 max-w-xl mx-auto">Солотча — курортный посёлок в 20 км от Рязани. Лес, тишина, чистая вода. Рядом с точкой выдачи — лучшие места для катания.</p>
+    <div class="grid md:grid-cols-4 gap-4 mb-12">
+      <div class="bg-brand-50 rounded-xl p-5 text-center">
+        <p class="font-bold text-brand-800">Река Старица</p>
+        <p class="text-xs text-gray-500 mt-1">Тихая, спокойная, для новичков</p>
+      </div>
+      <div class="bg-brand-50 rounded-xl p-5 text-center">
+        <p class="font-bold text-brand-800">Ласковское озеро</p>
+        <p class="text-xs text-gray-500 mt-1">Чистейшая вода, сосны</p>
+      </div>
+      <div class="bg-brand-50 rounded-xl p-5 text-center">
+        <p class="font-bold text-brand-800">Уржинское озеро</p>
+        <p class="text-xs text-gray-500 mt-1">Просторное, для компаний</p>
+      </div>
+      <div class="bg-brand-50 rounded-xl p-5 text-center">
+        <p class="font-bold text-brand-800">Река Ока</p>
+        <p class="text-xs text-gray-500 mt-1">Для опытных, течение</p>
+      </div>
+    </div>
+    <div class="rounded-2xl overflow-hidden shadow-lg">
+      <iframe src="https://yandex.ru/map-widget/v1/?z=12&ol=biz&oid=32822707925" width="100%" height="400" frameborder="0" loading="lazy"></iframe>
+    </div>
+    <p class="text-center text-sm text-gray-400 mt-4">Точка выдачи: Солотча, ГК «Гайдаровец». Подскажу лучший маршрут под ваш формат.</p>
+  </div>
+</section>
+
+
+<!-- CONTACTS -->
+<section id="contacts" class="py-16 md:py-24 bg-gray-900 text-white">
+  <div class="max-w-6xl mx-auto px-4 text-center">
+    <h2 class="text-3xl md:text-4xl font-bold mb-4">Забронировать</h2>
+    <p class="text-gray-400 mb-8 max-w-md mx-auto">Напишите или позвоните — расскажу детали и забронирую сапы на нужный день.</p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+      <a href="https://wa.me/79156053803" target="_blank" class="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-xl font-semibold transition text-lg">WhatsApp</a>
+      <a href="tel:+79156053803" class="bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-xl font-semibold transition text-lg border border-white/20">+7 915 605-38-03</a>
+      <a href="https://vk.com/suprent62" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold transition text-lg">ВКонтакте</a>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8 text-sm text-gray-400 max-w-2xl mx-auto">
+      <div>
+        <p class="text-white font-semibold mb-1">Адрес</p>
+        <p>Рязань, Солотча<br>ГК «Гайдаровец»</p>
+      </div>
+      <div>
+        <p class="text-white font-semibold mb-1">Режим</p>
+        <p>Ежедневно 9:00–21:00<br>Сезон: май — сентябрь</p>
+      </div>
+      <div>
+        <p class="text-white font-semibold mb-1">Документы</p>
+        <p>Паспорт РФ, 18+<br>Договор аренды</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-gray-950 text-gray-500 py-6 text-center text-xs">
+  <p>&copy; 2023–2026 SUPrent62. Рязань, Солотча.</p>
+</footer>
+
+</body>
+</html>
