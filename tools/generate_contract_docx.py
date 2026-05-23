@@ -26,15 +26,15 @@ FONT_TEXT = "Times New Roman"
 FONT_HEAD = "Arial"
 
 # half-points (Word size = 2 * pt)
-SIZE_TITLE = 26   # 13pt
-SIZE_H2 = 22      # 11pt
-SIZE_H3 = 20      # 10pt
-SIZE_TEXT = 20    # 10pt
-SIZE_NOTE = 18    # 9pt
+SIZE_TITLE = 28   # 14pt
+SIZE_H2 = 24      # 12pt
+SIZE_H3 = 22      # 11pt
+SIZE_TEXT = 22    # 11pt
+SIZE_NOTE = 20    # 10pt
 
 # spacing — twips (1/20 pt)
-SPACE_AFTER = 40
-SPACE_AFTER_HEAD = 80
+SPACE_AFTER = 60
+SPACE_AFTER_HEAD = 100
 LINE_SPACING = 240   # 1.0
 
 W = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"'
@@ -201,29 +201,6 @@ def party_table_arendator():
     return table(rows, [LABEL_W, VALUE_W])
 
 
-def damages_table():
-    items = [
-        ("а) SUP-board надувной Funwater",                    "20 000 ₽"),
-        ("б) плавник пластиковый",                            "2 000 ₽"),
-        ("в) насос ручной механический (с манометром, клапаном, шлангом)",
-         "3 000 ₽"),
-        ("г) весло сборное трёхсекционное",                   "3 500 ₽"),
-        ("д) рюкзак для транспортировки",                     "2 500 ₽"),
-        ("е) насос электрический",                            "3 500 ₽"),
-        ("ж) спасательный жилет",                             "1 500 ₽"),
-    ]
-    rows = []
-    for name, price in items:
-        rows.append(
-            tr(
-                cell(8000, para(run(name), spacing_after=0)),
-                cell(2200, para(run(price, bold=True), align="right",
-                                spacing_after=0)),
-            )
-        )
-    return table(rows, [8000, 2200])
-
-
 def options_table():
     rows = [
         tr(
@@ -372,28 +349,11 @@ def build_body():
     parts.append(
         p(
             run("2.1.", bold=True),
-            run(" Срок аренды (отметить применимый вариант):"),
-            spacing_after=20,
-        )
-    )
-    parts.append(
-        p(
-            run("☐ "),
-            run("Почасовая аренда: ", bold=True),
-            run("с "), field(5), run(" : "), field(5),
-            run(" до "), field(5), run(" : "), field(5),
-            run(", итого "), field(5), run(" час(а/ов)."),
-            indent=300,
-        )
-    )
-    parts.append(
-        p(
-            run("☐ "),
-            run("Аренда на сутки: ", bold=True),
-            field(5), run(" сутки, возврат не позднее "),
-            field(5), run(" : "), field(5),
-            run(" последних суток аренды."),
-            indent=300,
+            run(" Срок аренды — "),
+            field(5, bold=True),
+            run(" сутки/суток с момента подписания настоящего Договора. "
+                "По соглашению Сторон Оборудование может быть возвращено "
+                "ранее окончания срока."),
         )
     )
 
@@ -467,12 +427,28 @@ def build_body():
         run("4.3.", bold=True),
         run(" При повреждении или утрате Оборудования по вине Арендатора "
             "(или третьих лиц, за которых он отвечает) Арендатор возмещает "
-            "Арендодателю стоимость согласно прайсу:"),
-        spacing_after=20,
+            "Арендодателю стоимость согласно следующему прайсу."),
     ))
-    parts.append(p(run("4.3.1. Полная утрата или повреждение без возможности "
-                       "ремонта:", bold=True), indent=300, spacing_after=20))
-    parts.append(damages_table())
+    parts.append(p(
+        run("4.3.1.", bold=True),
+        run(" Полная утрата или повреждение без возможности ремонта: "),
+        run("SUP-board надувной Funwater — 20 000 ₽", bold=True),
+        run("; "),
+        run("плавник пластиковый — 2 000 ₽", bold=True),
+        run("; "),
+        run("насос ручной механический (с манометром, клапаном, шлангом) "
+            "— 3 000 ₽", bold=True),
+        run("; "),
+        run("весло сборное трёхсекционное — 3 500 ₽", bold=True),
+        run("; "),
+        run("рюкзак для транспортировки — 2 500 ₽", bold=True),
+        run("; "),
+        run("насос электрический — 3 500 ₽", bold=True),
+        run("; "),
+        run("спасательный жилет — 1 500 ₽", bold=True),
+        run("."),
+        indent=300,
+    ))
     parts.append(p(
         run("4.3.2.", bold=True),
         run(" Повреждение или утрата с возможностью ремонта/замены: "
