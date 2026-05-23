@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Генератор docs/contract_v2.docx — Word-версия договора проката
-из шаблона docs/contract_v2_template.md (по содержанию идентичны).
+Генератор docs/contract_v2.docx — Word-версия договора проката.
 
-Без внешних зависимостей: docx-файл собирается через стандартный
-zipfile + ручная сборка Office Open XML (минимально достаточная схема,
-открывается Word/LibreOffice/Google Docs).
+Дизайн-цели:
+  * максимум 2 страницы A4 (узкие поля, 10pt текст, плотный интервал);
+  * шапка Арендатора в таблице, чтобы поля не разъезжались;
+  * линии под заполнение — через подчёркнутые пробелы одного рана
+    (не разрываются переносами, ровные).
+
+Без внешних зависимостей: docx собирается стандартным
+zipfile + ручной Office Open XML.
 """
 
 from __future__ import annotations
@@ -21,21 +25,25 @@ from pathlib import Path
 FONT_TEXT = "Times New Roman"
 FONT_HEAD = "Arial"
 
-# размеры в "half-points" — Word считает в полупунктах (16pt = 32)
-SIZE_TITLE = 32     # 16 pt
-SIZE_H2 = 24        # 12 pt
-SIZE_H3 = 22        # 11 pt
-SIZE_TEXT = 22      # 11 pt
-SIZE_NOTE = 20      # 10 pt
+# half-points (Word size = 2 * pt)
+SIZE_TITLE = 26   # 13pt
+SIZE_H2 = 22      # 11pt
+SIZE_H3 = 20      # 10pt
+SIZE_TEXT = 20    # 10pt
+SIZE_NOTE = 18    # 9pt
 
-# --------------------------- helpers ---------------------------
+# spacing — twips (1/20 pt)
+SPACE_AFTER = 40
+SPACE_AFTER_HEAD = 80
+LINE_SPACING = 240   # 1.0
 
-W = "xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\""
+W = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"'
 
-def run(text: str, *, bold=False, italic=False, font=FONT_TEXT,
-        size=SIZE_TEXT, color: str | None = None,
-        underline=False) -> str:
-    """Один <w:r> (run) с настройками шрифта."""
+# --------------------------- runs / paragraphs ---------------------------
+
+
+def run(text, *, bold=False, italic=False, font=FONT_TEXT,
+        size=SIZE_TEXT, color=None, underline=False):
     rpr = ['<w:rFonts w:ascii="{f}" w:hAnsi="{f}" w:cs="{f}"/>'.format(f=font)]
     if bold:
         rpr.append("<w:b/><w:bCs/>")
@@ -47,372 +55,362 @@ def run(text: str, *, bold=False, italic=False, font=FONT_TEXT,
         rpr.append('<w:color w:val="{c}"/>'.format(c=color))
     rpr.append('<w:sz w:val="{s}"/><w:szCs w:val="{s}"/>'.format(s=size))
     rpr_xml = "<w:rPr>" + "".join(rpr) + "</w:rPr>"
-
-    text_xml = (
-        '<w:t xml:space="preserve">' + escape(text) + "</w:t>"
-        if text else "<w:t/>"
-    )
+    text_xml = ('<w:t xml:space="preserve">' + escape(text) + "</w:t>"
+                if text else "<w:t/>")
     return "<w:r>" + rpr_xml + text_xml + "</w:r>"
 
 
-def runs(*parts) -> str:
-    return "".join(parts)
+def field(width=30, *, bold=False):
+    """Линеечка для заполнения от руки — подчёркнутые пробелы."""
+    return run(" " * width, underline=True, bold=bold)
 
 
-def para(content: str, *, align: str | None = None,
-         spacing_before: int = 0, spacing_after: int = 120,
-         indent_left: int | None = None,
-         border: bool = False, shading: str | None = None,
-         keep_next: bool = False) -> str:
-    """Один абзац <w:p> с форматированием."""
+def runseq(*r):
+    return "".join(r)
+
+
+def para(content, *, align=None, spacing_before=0,
+         spacing_after=SPACE_AFTER, indent_left=None,
+         keep_next=False, keep_lines=False, line=LINE_SPACING):
     ppr_parts = []
     if keep_next:
         ppr_parts.append("<w:keepNext/>")
+    if keep_lines:
+        ppr_parts.append("<w:keepLines/>")
     ppr_parts.append(
-        '<w:spacing w:before="{b}" w:after="{a}"/>'.format(
-            b=spacing_before, a=spacing_after))
+        '<w:spacing w:before="{b}" w:after="{a}" '
+        'w:line="{l}" w:lineRule="auto"/>'.format(
+            b=spacing_before, a=spacing_after, l=line))
     if align:
         ppr_parts.append('<w:jc w:val="{a}"/>'.format(a=align))
     if indent_left is not None:
         ppr_parts.append('<w:ind w:left="{i}"/>'.format(i=indent_left))
-    if border:
-        ppr_parts.append(
-            "<w:pBdr>"
-            '<w:top w:val="single" w:sz="18" w:space="6" w:color="C00000"/>'
-            '<w:left w:val="single" w:sz="18" w:space="6" w:color="C00000"/>'
-            '<w:bottom w:val="single" w:sz="18" w:space="6" w:color="C00000"/>'
-            '<w:right w:val="single" w:sz="18" w:space="6" w:color="C00000"/>'
-            "</w:pBdr>"
-        )
-    if shading:
-        ppr_parts.append(
-            '<w:shd w:val="clear" w:color="auto" w:fill="{s}"/>'.format(
-                s=shading))
     ppr = "<w:pPr>" + "".join(ppr_parts) + "</w:pPr>" if ppr_parts else ""
     return "<w:p>" + ppr + content + "</w:p>"
 
 
-def title(text: str) -> str:
+def title(text):
     return para(
         run(text, bold=True, font=FONT_HEAD, size=SIZE_TITLE),
-        align="center", spacing_before=0, spacing_after=240,
+        align="center", spacing_after=120, keep_next=True,
     )
 
 
-def h2(text: str) -> str:
+def h2(text):
     return para(
         run(text, bold=True, font=FONT_HEAD, size=SIZE_H2),
-        spacing_before=240, spacing_after=120, keep_next=True,
+        spacing_before=80, spacing_after=SPACE_AFTER_HEAD,
+        keep_next=True, keep_lines=True,
     )
 
 
-def h3(text: str) -> str:
+def h3(text):
     return para(
         run(text, bold=True, font=FONT_TEXT, size=SIZE_H3),
-        spacing_before=120, spacing_after=60, keep_next=True,
+        spacing_before=40, spacing_after=20,
+        keep_next=True, keep_lines=True,
     )
 
 
-def p_text(*parts: str, align: str | None = None,
-           indent: int | None = None) -> str:
-    return para("".join(parts), align=align, indent_left=indent)
+def p(*parts, indent=None, align=None, spacing_after=SPACE_AFTER):
+    return para("".join(parts), align=align, indent_left=indent,
+                spacing_after=spacing_after)
 
 
-def p_note(text: str) -> str:
+def p_note(text):
     return para(
         run(text, italic=True, size=SIZE_NOTE, color="595959"),
-        spacing_after=120,
+        spacing_after=SPACE_AFTER,
     )
 
 
-def underscore(n: int) -> str:
-    """Подчерк для заполнения от руки (визуально пробел с подчёркиванием)."""
-    return "_" * n
+# --------------------------- table helpers ---------------------------
 
 
-def sep_line() -> str:
-    """Тонкая горизонтальная линия (граница абзаца снизу)."""
-    pPr = (
-        "<w:pPr>"
-        '<w:spacing w:before="0" w:after="0"/>'
-        "<w:pBdr>"
-        '<w:bottom w:val="single" w:sz="6" w:space="1" w:color="auto"/>'
-        "</w:pBdr>"
-        "</w:pPr>"
+def _no_borders():
+    return (
+        "<w:tcBorders>"
+        '<w:top w:val="nil"/><w:left w:val="nil"/>'
+        '<w:bottom w:val="nil"/><w:right w:val="nil"/>'
+        "</w:tcBorders>"
     )
-    return "<w:p>" + pPr + "</w:p>"
 
 
-def warning_box(title_text: str, body_lines: list[str]) -> str:
-    """Красная плашка-предупреждение: рамка + светло-красный фон."""
-    out = []
-    # заголовок плашки — крупнее, красный, жирный
-    out.append(
-        para(
-            run(title_text, bold=True, font=FONT_HEAD,
-                size=SIZE_H2, color="C00000"),
-            border=True, shading="FBE4E4",
-            spacing_before=240, spacing_after=0,
-            keep_next=True,
-        )
-    )
-    # пустая граничная строка для слитного блока
-    for i, line in enumerate(body_lines):
-        is_last = i == len(body_lines) - 1
-        out.append(
-            para(
-                run(line, size=SIZE_TEXT, color="C00000"),
-                border=True, shading="FBE4E4",
-                spacing_before=0,
-                spacing_after=120 if is_last else 0,
-            )
-        )
-    return "".join(out)
+def cell(width, content, *, valign="top"):
+    return (
+        "<w:tc>"
+        '<w:tcPr><w:tcW w:w="{w}" w:type="dxa"/>{b}'
+        '<w:vAlign w:val="{v}"/></w:tcPr>'
+        "{c}"
+        "</w:tc>"
+    ).format(w=width, b=_no_borders(), v=valign, c=content)
+
+
+def cell_span(width, content, span):
+    return (
+        "<w:tc>"
+        '<w:tcPr><w:tcW w:w="{w}" w:type="dxa"/>{b}'
+        '<w:gridSpan w:val="{s}"/></w:tcPr>'
+        "{c}"
+        "</w:tc>"
+    ).format(w=width, b=_no_borders(), s=span, c=content)
+
+
+def table(rows, col_widths):
+    grid = "<w:tblGrid>" + "".join(
+        '<w:gridCol w:w="{w}"/>'.format(w=w) for w in col_widths
+    ) + "</w:tblGrid>"
+    tbl_pr = (
+        "<w:tblPr>"
+        '<w:tblW w:w="{w}" w:type="dxa"/>'
+        '<w:tblLayout w:type="fixed"/>'
+        "<w:tblCellMargin>"
+        '<w:top w:w="20" w:type="dxa"/><w:left w:w="40" w:type="dxa"/>'
+        '<w:bottom w:w="20" w:type="dxa"/><w:right w:w="40" w:type="dxa"/>'
+        "</w:tblCellMargin>"
+        "</w:tblPr>"
+    ).format(w=sum(col_widths))
+    return "<w:tbl>" + tbl_pr + grid + "".join(rows) + "</w:tbl>"
+
+
+def tr(*cells):
+    return "<w:tr>" + "".join(cells) + "</w:tr>"
 
 
 # --------------------------- содержимое ---------------------------
 
-def build_body() -> str:
-    parts: list[str] = []
+LABEL_W = 2400
+VALUE_W = 7800
+
+
+def party_table_arendator():
+    rows = []
+    for label in [
+        "ФИО:",
+        "Зарегистрирован(а) по адресу:",
+        "Паспорт серия и номер:",
+        "Кем и когда выдан:",
+        "Телефон:",
+    ]:
+        rows.append(
+            tr(
+                cell(LABEL_W, para(run(label), spacing_after=0)),
+                cell(VALUE_W, para(field(80), spacing_after=0)),
+            )
+        )
+    return table(rows, [LABEL_W, VALUE_W])
+
+
+def damages_table():
+    items = [
+        ("а) SUP-board надувной Funwater",                    "20 000 ₽"),
+        ("б) плавник пластиковый",                            "2 000 ₽"),
+        ("в) насос ручной механический (с манометром, клапаном, шлангом)",
+         "3 000 ₽"),
+        ("г) весло сборное трёхсекционное",                   "3 500 ₽"),
+        ("д) рюкзак для транспортировки",                     "2 500 ₽"),
+        ("е) насос электрический",                            "3 500 ₽"),
+        ("ж) спасательный жилет",                             "1 500 ₽"),
+    ]
+    rows = []
+    for name, price in items:
+        rows.append(
+            tr(
+                cell(8000, para(run(name), spacing_after=0)),
+                cell(2200, para(run(price, bold=True), align="right",
+                                spacing_after=0)),
+            )
+        )
+    return table(rows, [8000, 2200])
+
+
+def options_table():
+    rows = [
+        tr(
+            cell(400, para(run("☐"), spacing_after=0)),
+            cell(4500, para(run("Насос электрический"), spacing_after=0)),
+            cell(1500, para(runseq(field(8), run(" шт.")), spacing_after=0)),
+            cell(3800, para(run("+ 400 ₽ за весь срок аренды", bold=True),
+                            spacing_after=0)),
+        ),
+        tr(
+            cell(400, para(run("☐"), spacing_after=0)),
+            cell(4500, para(run("Спасательный жилет"), spacing_after=0)),
+            cell(1500, para(runseq(field(8), run(" шт.")), spacing_after=0)),
+            cell(3800, para(run("бесплатно", bold=True), spacing_after=0)),
+        ),
+        tr(
+            cell(400, para(run("☐"), spacing_after=0)),
+            cell(4500, para(run("Доставка Оборудования"), spacing_after=0)),
+            cell(1500, para(run(""), spacing_after=0)),
+            cell(3800, para(runseq(run("+ "), field(10),
+                                   run(" ₽ (по согласованию)")),
+                            spacing_after=0)),
+        ),
+    ]
+    return table(rows, [400, 4500, 1500, 3800])
+
+
+def _sig_row(label, fio):
+    fio_text = run(fio, bold=True) if fio else field(20)
+    return tr(
+        cell(4500, para(run(label), spacing_after=0)),
+        cell(3500, para(field(28), spacing_after=0)),
+        cell(2200, para(runseq(run("/ "), fio_text, run(" /")),
+                        spacing_after=0)),
+    )
+
+
+def _sig_subhead(text):
+    inner = para(run(text, bold=True, size=SIZE_H3),
+                 spacing_after=0, spacing_before=80)
+    return "<w:tr>" + cell_span(10200, inner, 3) + "</w:tr>"
+
+
+def signatures_table():
+    rows = [
+        _sig_row("Арендодатель сдал Оборудование:", "Воробьев П.А."),
+        _sig_row("Арендатор принял Оборудование:", None),
+        _sig_subhead("7.2. Возврат Оборудования (окончание срока):"),
+        _sig_row("Арендатор сдал Оборудование:", None),
+        _sig_row("Арендодатель принял Оборудование:", "Воробьев П.А."),
+    ]
+    return table(rows, [4500, 3500, 2200])
+
+
+# --------------------------- сборка тела ---------------------------
+
+
+def build_body():
+    parts = []
 
     parts.append(title("ДОГОВОР ОКАЗАНИЯ УСЛУГ ПРОКАТА СПОРТИВНОГО ИНВЕНТАРЯ"))
 
-    # дата + место заключения
+    # дата + место
     parts.append(
-        p_text(
-            run("г. Рязань", size=SIZE_TEXT),
-            run("\t\t\t\t\t\t\t\t", size=SIZE_TEXT),
-            run("«", size=SIZE_TEXT),
-            run(underscore(3), size=SIZE_TEXT),
-            run("» ", size=SIZE_TEXT),
-            run(underscore(14), size=SIZE_TEXT),
-            run(" 20", size=SIZE_TEXT),
-            run(underscore(2), size=SIZE_TEXT),
-            run(" г.", size=SIZE_TEXT),
+        p(
+            run("г. Рязань"),
+            run("\t\t\t\t\t\t\t\t\t\t"),
+            run("«"), field(3), run("» "), field(14), run(" 20"),
+            field(2), run(" г."),
         )
     )
 
-    # Арендодатель — предзаполнен
+    # Арендодатель
     parts.append(
-        p_text(
+        p(
             run("Воробьев Павел Алексеевич", bold=True),
-            run(", паспорт серия и номер "),
+            run(", паспорт "),
             run("61 24 № 381913", bold=True),
-            run(", выдан "),
-            run("УМВД России по Рязанской области", bold=True),
-            run(", зарегистрирован по адресу: "),
-            run("г. Рязань, пос. Солотча, ул. Гайдара, д. 3, кв. 8", bold=True),
-            run(", телефон: "),
-            run("89156053803", bold=True),
+            run(", выдан УМВД России по Рязанской области, "
+                "зарегистрирован по адресу: г. Рязань, пос. Солотча, "
+                "ул. Гайдара, д. 3, кв. 8, тел. "),
+            run("8 915 605 38 03", bold=True),
             run(", именуемый в дальнейшем "),
             run("«Арендодатель»", bold=True),
             run(", с одной стороны,"),
         )
     )
 
-    # Арендатор — поля под заполнение
     parts.append(
-        p_text(
-            run("и Гражданин(ка) "),
-            run(underscore(80)),
-            run(","),
-        )
-    )
-    parts.append(
-        p_text(
-            run("зарегистрированный(ая) по адресу: "),
-            run(underscore(70)),
-            run(","),
-        )
-    )
-    parts.append(
-        p_text(
-            run("паспорт серия и номер "),
-            run(underscore(75)),
-            run(","),
-        )
-    )
-    parts.append(
-        p_text(
-            run("выдан "),
-            run(underscore(85)),
-            run(","),
-        )
-    )
-    parts.append(
-        p_text(
-            run("телефон: "),
-            run(underscore(40)),
-            run(", именуемый(ая) в дальнейшем "),
+        p(
+            run("и Гражданин(ка), указанный(ая) ниже, именуемый(ая) "
+                "в дальнейшем "),
             run("«Арендатор»", bold=True),
-            run(", с другой стороны,"),
-        )
-    )
-    parts.append(
-        p_text(
-            run("именуемые вместе — "),
-            run("«Стороны»", bold=True),
-            run(", заключили настоящий Договор о нижеследующем."),
+            run(", с другой стороны, заключили настоящий Договор:"),
+            spacing_after=20,
         )
     )
 
-    parts.append(
-        p_note(
-            "Личность Арендатора удостоверяется паспортом при заключении "
-            "настоящего Договора. Подлинник паспорта в залог не изымается."
-        )
-    )
+    parts.append(party_table_arendator())
+
+    parts.append(p_note(
+        "Личность Арендатора удостоверяется паспортом при заключении "
+        "Договора. Подлинник паспорта в залог не изымается."
+    ))
 
     # ----- 1. Предмет -----
     parts.append(h2("1. ПРЕДМЕТ ДОГОВОРА И КОМПЛЕКТАЦИЯ"))
 
     parts.append(
-        p_text(
+        p(
             run("1.1.", bold=True),
-            run(" Арендодатель передаёт Арендатору на возмездной основе "
-                "во временное пользование исправный(ые) и укомплектованный(ые) "
+            run(" Арендодатель передаёт Арендатору во временное пользование "
                 "комплект(ы) оборудования (далее — "),
             run("«Оборудование»", bold=True),
-            run("), а Арендатор принимает их."),
-        )
-    )
-
-    parts.append(
-        p_text(
-            run("1.2.", bold=True),
-            run(" В состав одного "),
+            run("). В состав одного "),
             run("базового комплекта", bold=True),
-            run(" (входит в стоимость аренды) входит:"),
+            run(" (входит в стоимость аренды) входит: а) SUP-board надувной "
+                "Funwater; б) плавник пластиковый; в) насос ручной "
+                "механический с манометром, клапаном и шлангом; "
+                "г) весло сборное трёхсекционное; д) рюкзак для "
+                "транспортировки."),
         )
     )
-    for line in [
-        "а) SUP-board надувной Funwater;",
-        "б) плавник пластиковый;",
-        "в) насос ручной механический с манометром, клапаном и шлангом;",
-        "г) весло сборное трёхсекционное (металл/пластик);",
-        "д) рюкзак для транспортировки Оборудования.",
-    ]:
-        parts.append(p_text(run(line), indent=420))
 
     parts.append(
-        p_text(
-            run("1.3.", bold=True),
+        p(
+            run("1.2.", bold=True),
             run(" Количество передаваемых базовых комплектов: "),
-            run(underscore(6), bold=True),
-            run(" комплект(а/ов)."),
+            field(6, bold=True),
+            run(" шт."),
         )
     )
 
     parts.append(
-        p_text(
-            run("1.4.", bold=True),
-            run(" Дополнительные опции (по желанию Арендатора, "
-                "отметить знаком ✓ или обвести кружком):"),
+        p(
+            run("1.3.", bold=True),
+            run(" Дополнительные опции (по желанию Арендатора, отметить ☑):"),
+            spacing_after=20,
         )
     )
-    for ch_line in [
-        ("☐ Насос электрический",
-         underscore(5) + " шт.",
-         "+ 400 ₽ за весь срок аренды"),
-        ("☐ Спасательный жилет",
-         underscore(5) + " шт.",
-         "бесплатно"),
-        ("☐ Доставка Оборудования",
-         "",
-         "+ " + underscore(7) + " ₽ (по согласованию)"),
-    ]:
-        left, qty, price = ch_line
-        parts.append(
-            p_text(
-                run(left + "    "),
-                run(qty + "    " if qty else ""),
-                run(price, bold=True),
-                indent=420,
-            )
-        )
+    parts.append(options_table())
 
-    # ----- 2. Срок аренды и расчёты -----
+    # ----- 2. Срок и расчёты -----
     parts.append(h2("2. СРОК АРЕНДЫ И РАСЧЁТЫ"))
 
     parts.append(
-        p_text(
+        p(
             run("2.1.", bold=True),
             run(" Срок аренды (отметить применимый вариант):"),
+            spacing_after=20,
         )
     )
     parts.append(
-        p_text(
+        p(
             run("☐ "),
-            run("Почасовая аренда:", bold=True),
-            run(" с "),
-            run(underscore(5), bold=True),
-            run(" : "),
-            run(underscore(5), bold=True),
-            run(" до "),
-            run(underscore(5), bold=True),
-            run(" : "),
-            run(underscore(5), bold=True),
-            run(", итого "),
-            run(underscore(5), bold=True),
-            run(" час(а/ов)."),
-            indent=420,
+            run("Почасовая аренда: ", bold=True),
+            run("с "), field(5), run(" : "), field(5),
+            run(" до "), field(5), run(" : "), field(5),
+            run(", итого "), field(5), run(" час(а/ов)."),
+            indent=300,
         )
     )
     parts.append(
-        p_text(
+        p(
             run("☐ "),
-            run("Аренда на сутки:", bold=True),
-            run(" "),
-            run(underscore(5), bold=True),
-            run(" суток, возврат не позднее "),
-            run(underscore(5), bold=True),
-            run(" : "),
-            run(underscore(5), bold=True),
+            run("Аренда на сутки: ", bold=True),
+            field(5), run(" сутки, возврат не позднее "),
+            field(5), run(" : "), field(5),
             run(" последних суток аренды."),
-            indent=420,
+            indent=300,
         )
     )
 
     parts.append(
-        p_text(
+        p(
             run("2.2.", bold=True),
-            run(" Арендная плата по настоящему Договору составляет "),
-            run(underscore(12), bold=True),
-            run(" ("),
-            run(underscore(28), bold=True),
-            run(") рублей за весь срок пользования Оборудованием с учётом "
-                "выбранных в п. 1.4 дополнительных опций."),
+            run(" Арендная плата за весь срок пользования Оборудованием "
+                "с учётом выбранных в п. 1.3 опций составляет "),
+            field(12, bold=True),
+            run(" ("), field(28), run(") рублей."),
         )
     )
-
     parts.append(
-        p_text(
+        p(
             run("2.3.", bold=True),
-            run(" Залог по настоящему Договору не взимается. В качестве "
-                "идентификации Арендатора Арендодатель сверяет данные паспорта "
-                "Арендатора при заключении настоящего Договора и передаче "
-                "Оборудования."),
-        )
-    )
-
-    parts.append(
-        p_text(
-            run("2.4.", bold=True),
-            run(" Подписанием настоящего Договора Стороны подтверждают:"),
-        )
-    )
-    parts.append(
-        p_text(
-            run("— Арендодатель — получение от Арендатора денежных средств за "
-                "аренду Оборудования;"),
-            indent=420,
-        )
-    )
-    parts.append(
-        p_text(
-            run("— Арендатор — получение от Арендодателя Оборудования, "
-                "указанного в пп. 1.2–1.4 настоящего Договора."),
-            indent=420,
+            run(" Залог не взимается. Арендодатель сверяет данные паспорта "
+                "Арендатора при передаче Оборудования."),
         )
     )
 
@@ -420,269 +418,130 @@ def build_body() -> str:
     parts.append(h2("3. ОБЯЗАННОСТИ СТОРОН"))
 
     parts.append(h3("3.1. Арендодатель обязан:"))
-    parts.append(
-        p_text(
-            run("3.1.1.", bold=True),
-            run(" Передать Арендатору Оборудование в рабочем состоянии, "
-                "отвечающем условиям настоящего Договора, в срок, указанный в "
-                "п. 2.1."),
-        )
-    )
-    parts.append(
-        p_text(
-            run("3.1.2.", bold=True),
-            run(" Оказывать консультативную и иную помощь в рамках "
-                "использования Оборудования."),
-        )
-    )
-    parts.append(
-        p_text(
-            run("3.1.3.", bold=True),
-            run(" Принять Оборудование по окончании срока аренды."),
-        )
-    )
+    parts.append(p(run("3.1.1.", bold=True),
+                   run(" Передать Арендатору Оборудование в рабочем "
+                       "состоянии в срок, указанный в п. 2.1."), indent=300))
+    parts.append(p(run("3.1.2.", bold=True),
+                   run(" Оказывать консультативную помощь по использованию "
+                       "Оборудования."), indent=300))
+    parts.append(p(run("3.1.3.", bold=True),
+                   run(" Принять Оборудование по окончании срока аренды."),
+                   indent=300))
 
     parts.append(h3("3.2. Арендатор обязан:"))
-    parts.append(
-        p_text(
-            run("3.2.1.", bold=True),
-            run(" Использовать Оборудование в соответствии с условиями "
-                "Договора и назначением имущества. Если Арендатор пользуется "
-                "Оборудованием с нарушениями условий Договора или назначения "
-                "имущества, Арендодатель имеет право потребовать расторжения "
-                "Договора и возмещения убытков."),
-        )
-    )
-    parts.append(
-        p_text(
-            run("3.2.2.", bold=True),
-            run(" Поддерживать Оборудование в исправном состоянии."),
-        )
-    )
-    parts.append(
-        p_text(
-            run("3.2.3.", bold=True),
-            run(" Возвратить Оборудование Арендодателю в том же состоянии, "
-                "в каком оно было передано, с учётом нормального износа, не "
-                "позднее срока, указанного в п. 2.1 настоящего Договора."),
-        )
-    )
-
-    # плашка штрафа
-    parts.append(
-        warning_box(
-            "⚠ ВНИМАНИЕ: ШТРАФ ЗА ЗАГРЯЗНЁННОЕ ОБОРУДОВАНИЕ — 700 ₽",
-            [
-                "Оборудование возвращается в чистом виде: без песка, грязи, "
-                "травы, земли и иных сильно бросающихся в глаза загрязнений.",
-                "При возврате Оборудования с любым из перечисленных загрязнений "
-                "Арендатор оплачивает штраф 700 (семьсот) рублей дополнительно "
-                "к арендной плате (п. 3.2.4).",
-            ],
-        )
-    )
-
-    parts.append(
-        p_text(
-            run("3.2.4.", bold=True),
-            run(" Возвратить Оборудование в чистом виде. Штраф за возврат "
-                "загрязнённого Оборудования — "),
-            run("700 (семьсот) рублей", bold=True),
-            run("."),
-        )
-    )
+    parts.append(p(
+        run("3.2.1.", bold=True),
+        run(" Использовать Оборудование в соответствии с его назначением. "
+            "При нарушении назначения или условий Договора Арендодатель "
+            "вправе потребовать расторжения Договора и возмещения убытков."),
+        indent=300,
+    ))
+    parts.append(p(run("3.2.2.", bold=True),
+                   run(" Поддерживать Оборудование в исправном состоянии."),
+                   indent=300))
+    parts.append(p(
+        run("3.2.3.", bold=True),
+        run(" Возвратить Оборудование в том же состоянии, в каком оно было "
+            "передано (с учётом нормального износа), и в "),
+        run("чистом виде", bold=True),
+        run(" — без песка, грязи, травы, земли и иных явных загрязнений — "
+            "не позднее срока, указанного в п. 2.1. "),
+        run("Штраф за возврат загрязнённого Оборудования — 500 (пятьсот) "
+            "рублей.", bold=True),
+        indent=300,
+    ))
 
     # ----- 4. Ответственность -----
     parts.append(h2("4. ОТВЕТСТВЕННОСТЬ СТОРОН"))
 
-    parts.append(
-        p_text(
-            run("4.1.", bold=True),
-            run(" Стороны несут ответственность за неисполнение или "
-                "ненадлежащее исполнение условий Договора."),
-        )
-    )
-    parts.append(
-        p_text(
-            run("4.2.", bold=True),
-            run(" Арендодатель не отвечает за недостатки сданного в аренду "
-                "Оборудования, которые были им оговорены при заключении "
-                "Договора аренды или были заранее известны Арендатору либо "
-                "должны были быть обнаружены Арендатором во время осмотра "
-                "Оборудования или проверки его исправности при заключении "
-                "Договора и/или передаче Оборудования в аренду."),
-        )
-    )
-    parts.append(
-        p_text(
-            run("4.3.", bold=True),
-            run(" При возврате неисправного арендованного Оборудования, "
-                "поврежденного по вине Арендатора или третьих лиц, "
-                "ответственность за которых в отношении Оборудования несёт "
-                "Арендатор, Арендатор обязан возместить Арендодателю расходы "
-                "по ремонту и/или утрате Оборудования:"),
-        )
-    )
-    parts.append(
-        p_text(
-            run("4.3.1.", bold=True),
-            run(" Полная утеря, утеря части или повреждение без возможности "
-                "ремонта Оборудования:"),
-        )
-    )
-    for line in [
-        ("а) SUP-board надувной Funwater — ", "20 000", " рублей;"),
-        ("б) плавник пластиковый — ", "2 000", " рублей;"),
-        ("в) насос ручной механический с манометром, клапаном и шлангом — ",
-         "3 000", " рублей;"),
-        ("г) весло сборное трёхсекционное — ", "3 500", " рублей;"),
-        ("д) рюкзак для транспортировки Оборудования — ", "2 500",
-         " рублей;"),
-        ("е) насос электрический — ", "3 500", " рублей;"),
-        ("ж) спасательный жилет — ", "1 500", " рублей."),
-    ]:
-        prefix, amount, suffix = line
-        parts.append(
-            p_text(
-                run(prefix),
-                run(amount, bold=True),
-                run(suffix),
-                indent=420,
-            )
-        )
-    parts.append(
-        p_text(
-            run("4.3.2.", bold=True),
-            run(" Повреждение или утеря части Оборудования с возможностью "
-                "ремонта или частичной замены рассчитывается по формуле: "
-                "стоимость ремонта/возмещения/покупки части Оборудования плюс "),
-            run("2 500 (две тысячи пятьсот) рублей", bold=True),
-            run(" независимо от сложности восстановления Оборудования к "
-                "рабочему/исправному/пригодному к дальнейшей эксплуатации "
-                "состоянию."),
-        )
-    )
-    parts.append(
-        p_text(
-            run("4.4.", bold=True),
-            run(" Арендатор не несёт ответственность за невозможность "
-                "Арендодателя принять Оборудование в обозначенные сроки по "
-                "Договору."),
-        )
-    )
+    parts.append(p(run("4.1.", bold=True),
+                   run(" Стороны несут ответственность за неисполнение или "
+                       "ненадлежащее исполнение условий Договора.")))
+    parts.append(p(
+        run("4.2.", bold=True),
+        run(" Арендодатель не отвечает за недостатки Оборудования, "
+            "оговорённые при заключении Договора, заранее известные "
+            "Арендатору либо обнаруживаемые при обычном осмотре при выдаче."),
+    ))
+    parts.append(p(
+        run("4.3.", bold=True),
+        run(" При повреждении или утрате Оборудования по вине Арендатора "
+            "(или третьих лиц, за которых он отвечает) Арендатор возмещает "
+            "Арендодателю стоимость согласно прайсу:"),
+        spacing_after=20,
+    ))
+    parts.append(p(run("4.3.1. Полная утрата или повреждение без возможности "
+                       "ремонта:", bold=True), indent=300, spacing_after=20))
+    parts.append(damages_table())
+    parts.append(p(
+        run("4.3.2.", bold=True),
+        run(" Повреждение или утрата с возможностью ремонта/замены: "
+            "стоимость ремонта/замены части плюс "),
+        run("2 500 (две тысячи пятьсот) рублей", bold=True),
+        run(" независимо от сложности восстановления."),
+        indent=300,
+    ))
+    parts.append(p(
+        run("4.4.", bold=True),
+        run(" Арендатор не отвечает за невозможность Арендодателя принять "
+            "Оборудование в обозначенный срок."),
+    ))
 
     # ----- 5. Споры -----
     parts.append(h2("5. ПОРЯДОК РАЗРЕШЕНИЯ СПОРОВ"))
-    parts.append(
-        p_text(
-            run("5.1.", bold=True),
-            run(" Все споры или разногласия, возникающие между Сторонами по "
-                "настоящему Договору или возникшие в связи с ним, разрешаются "
-                "путём переговоров между Сторонами."),
-        )
-    )
-    parts.append(
-        p_text(
-            run("5.2.", bold=True),
-            run(" В случае невозможности разрешения разногласий путём "
-                "переговоров они подлежат рассмотрению в суде в порядке, "
-                "установленном действующим законодательством Российской "
-                "Федерации."),
-        )
-    )
+    parts.append(p(
+        run("5.1.", bold=True),
+        run(" Все споры разрешаются переговорами. При невозможности — в "
+            "суде по месту нахождения Арендодателя в порядке, установленном "
+            "законодательством РФ."),
+    ))
 
     # ----- 6. Заключительные -----
     parts.append(h2("6. ЗАКЛЮЧИТЕЛЬНЫЕ ПОЛОЖЕНИЯ"))
-    for n, text in [
-        ("6.1.", "Настоящий Договор вступает в силу с момента его подписания "
-                 "Сторонами."),
-        ("6.2.", "Любые изменения и дополнения к настоящему Договору имеют "
-                 "силу только в том случае, если они оформлены в письменном "
-                 "виде и подтверждены обеими Сторонами. Принимаются изменения, "
-                 "зафиксированные в ходе электронной переписки Сторон, в "
-                 "случае их фиксации обеими Сторонами."),
-        ("6.3.", "Окончание срока действия Договора не освобождает Стороны от "
-                 "исполнения обязательств по Договору."),
-        ("6.4.", "Настоящий Договор может быть расторгнут досрочно по "
-                 "письменному соглашению Сторон или в иных случаях, "
-                 "предусмотренных законом Российской Федерации."),
-        ("6.5.", "Настоящий Договор составляется в одном экземпляре, который "
-                 "остаётся у Арендодателя. По письменному или устному "
-                 "требованию Арендатора может быть оформлен второй экземпляр "
-                 "на бумажном носителе. В отсутствие такого требования "
-                 "Арендатор вправе получить фотокопию (скан-копию) подписанного "
-                 "Договора, имеющую информационное значение."),
-        ("6.6.", "Во всём остальном Стороны руководствуются законодательством "
-                 "Российской Федерации."),
-    ]:
-        parts.append(
-            p_text(
-                run(n, bold=True),
-                run(" " + text),
-            )
-        )
+    parts.append(p(
+        run("6.1.", bold=True),
+        run(" Договор вступает в силу с момента подписания Сторонами. "
+            "Окончание срока действия Договора не освобождает Стороны от "
+            "обязательств, возникших до его окончания."),
+    ))
+    parts.append(p(
+        run("6.2.", bold=True),
+        run(" Изменения и дополнения оформляются письменно и подписываются "
+            "обеими Сторонами; равноценны изменения, зафиксированные в "
+            "электронной переписке Сторон."),
+    ))
+    parts.append(p(
+        run("6.3.", bold=True),
+        run(" Договор составляется в одном экземпляре, который остаётся у "
+            "Арендодателя; по требованию Арендатора оформляется второй "
+            "экземпляр, либо предоставляется фотокопия. Во всём остальном "
+            "Стороны руководствуются законодательством РФ."),
+    ))
 
-    # ----- 7. Подписи -----
+    # ----- 7. Подписи / акт -----
     parts.append(h2("7. ПОДПИСИ СТОРОН (АКТ ПРИЁМА-ПЕРЕДАЧИ)"))
-    parts.append(
-        p_note("Реквизиты Сторон указаны в шапке настоящего Договора и не "
-               "повторяются.")
-    )
-
+    parts.append(p_note(
+        "Реквизиты Сторон указаны в шапке настоящего Договора и не "
+        "повторяются. 7.1 — выдача, 7.2 — возврат."
+    ))
     parts.append(h3("7.1. Выдача Оборудования (начало срока аренды):"))
-    parts.append(
-        p_text(
-            run("Арендодатель сдал Оборудование:    "),
-            run(underscore(28)),
-            run("  /  "),
-            run("Воробьев П.А.", bold=True),
-            run("  /"),
-        )
-    )
-    parts.append(
-        p_text(
-            run("Арендатор принял Оборудование:    "),
-            run(underscore(28)),
-            run("  /  "),
-            run(underscore(20)),
-            run("  /"),
-        )
-    )
-
-    parts.append(h3("7.2. Возврат Оборудования (окончание срока аренды):"))
-    parts.append(
-        p_text(
-            run("Арендатор сдал Оборудование:        "),
-            run(underscore(28)),
-            run("  /  "),
-            run(underscore(20)),
-            run("  /"),
-        )
-    )
-    parts.append(
-        p_text(
-            run("Арендодатель принял Оборудование:  "),
-            run(underscore(28)),
-            run("  /  "),
-            run("Воробьев П.А.", bold=True),
-            run("  /"),
-        )
-    )
+    parts.append(signatures_table())
 
     return "".join(parts)
 
 
 # --------------------------- сборка docx ---------------------------
 
-def docx_xml() -> dict[str, str | bytes]:
+
+def docx_files():
     body = build_body()
 
-    # настройки страницы — A4 и поля
     sect_pr = (
         "<w:sectPr>"
-        '<w:pgSz w:w="11906" w:h="16838"/>'  # A4 portrait
-        '<w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" '
-        'w:header="708" w:footer="708" w:gutter="0"/>'
+        '<w:pgSz w:w="11906" w:h="16838"/>'
+        # узкие поля: 1.4cm слева/справа, 1.0cm сверху/снизу
+        '<w:pgMar w:top="567" w:right="794" w:bottom="567" w:left="794" '
+        'w:header="284" w:footer="284" w:gutter="0"/>'
         "</w:sectPr>"
     )
 
@@ -697,22 +556,18 @@ def docx_xml() -> dict[str, str | bytes]:
         '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
         '<w:styles ' + W + '>'
         "<w:docDefaults>"
-        "<w:rPrDefault>"
-        "<w:rPr>"
+        "<w:rPrDefault><w:rPr>"
         '<w:rFonts w:ascii="' + FONT_TEXT + '" w:hAnsi="' + FONT_TEXT + '" '
         'w:cs="' + FONT_TEXT + '"/>'
         '<w:sz w:val="' + str(SIZE_TEXT) + '"/>'
         '<w:szCs w:val="' + str(SIZE_TEXT) + '"/>'
         '<w:lang w:val="ru-RU" w:eastAsia="ru-RU" w:bidi="ar-SA"/>'
-        "</w:rPr>"
-        "</w:rPrDefault>"
-        "<w:pPrDefault>"
-        "<w:pPr>"
-        '<w:spacing w:before="0" w:after="120" w:line="276" '
-        'w:lineRule="auto"/>'
+        "</w:rPr></w:rPrDefault>"
+        "<w:pPrDefault><w:pPr>"
+        '<w:spacing w:before="0" w:after="' + str(SPACE_AFTER) + '" '
+        'w:line="' + str(LINE_SPACING) + '" w:lineRule="auto"/>'
         '<w:jc w:val="both"/>'
-        "</w:pPr>"
-        "</w:pPrDefault>"
+        "</w:pPr></w:pPrDefault>"
         "</w:docDefaults>"
         "</w:styles>"
     )
@@ -763,26 +618,22 @@ def docx_xml() -> dict[str, str | bytes]:
     )
 
     return {
-        "[Content_Types].xml": content_types,
-        "_rels/.rels": rels_root,
-        "word/_rels/document.xml.rels": rels_doc,
-        "word/document.xml": document,
-        "word/styles.xml": styles,
-        "word/settings.xml": settings,
+        "[Content_Types].xml": content_types.encode("utf-8"),
+        "_rels/.rels": rels_root.encode("utf-8"),
+        "word/_rels/document.xml.rels": rels_doc.encode("utf-8"),
+        "word/document.xml": document.encode("utf-8"),
+        "word/styles.xml": styles.encode("utf-8"),
+        "word/settings.xml": settings.encode("utf-8"),
     }
 
 
-def main() -> None:
+def main():
     here = Path(__file__).resolve().parent.parent
     out = here / "docs" / "contract_v2.docx"
     out.parent.mkdir(parents=True, exist_ok=True)
 
-    files = docx_xml()
-
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as zf:
-        for name, data in files.items():
-            if isinstance(data, str):
-                data = data.encode("utf-8")
+        for name, data in docx_files().items():
             zf.writestr(name, data)
 
     print("Wrote", out, "size", os.path.getsize(out), "bytes")
